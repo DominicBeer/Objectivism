@@ -93,38 +93,13 @@ namespace Objectivism
             return tree2;
         }
 
+        //python style enumerate for use in a foreach loop
         public static IEnumerable<(int , T )> Enumerate<T>(this IEnumerable<T> series)
         {
             return series.Select((x, i) => (i, x));
         }
 
-        internal static (string Name, ObjectProperty Property) GetPropertyData(IGH_DataAccess DA, int paramIndex, IGH_Component @this)
-        {
-            var param = @this.Params.Input[paramIndex];
-            ObjectProperty prop;
-            var name = param.NickName;
-            if (param.Access == GH_ParamAccess.item)
-            {
-                IGH_Goo item = null;
-                if (!DA.GetData(paramIndex, ref item))
-                {
-                    @this.AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, $"{name} has no input and has been assigned null data");
-                }
-                prop = new ObjectProperty(item);
-            }
-            else if (param.Access == GH_ParamAccess.list)
-            {
-                var items = new List<IGH_Goo>();
-                DA.GetDataList(paramIndex, items);
-                prop = new ObjectProperty(items);
-            }
-            else //tree access
-            {
-                DA.GetDataTree(paramIndex, out GH_Structure<IGH_Goo> itemTree);
-                prop = new ObjectProperty(itemTree);
-            }
-            return (name, prop);
-        }
+        
 
         internal static GH_Structure<IGH_Goo> EmptyTree 
         { 

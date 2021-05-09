@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
 using static Objectivism.Util;
+using static Objectivism.PropertyRetriever;
 using Grasshopper.Kernel.Parameters;
 namespace Objectivism
 {
@@ -151,7 +152,7 @@ namespace Objectivism
 
             for(int i = 1; i < Params.Input.Count; i++)
             {
-                updates.Add(GetPropertyData(DA, i, this));
+                updates.Add(RetrieveProperties(DA, i, this));
             }
             var newObj = obj.AddOrChangeProperties(updates);
 

@@ -66,18 +66,19 @@
     <Reference Include="System.Windows.Forms" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AccessChecker.cs" />
-    <Compile Include="AddOrChangePropertiesComponent.cs" />
-    <Compile Include="CreateObjectComponent.cs" />
-    <Compile Include="GetPropertiesComponent.cs" />
-    <Compile Include="GH_ObjectivismObject.cs" />
+    <Compile Include="Components\ComponentUtil\AccessChecker.cs" />
+    <Compile Include="Components\AddOrChangePropertiesComponent.cs" />
+    <Compile Include="Components\ComponentUtil\PropertyRetriever.cs" />
+    <Compile Include="Components\CreateObjectComponent.cs" />
+    <Compile Include="Components\GetPropertiesComponent.cs" />
+    <Compile Include="ObjectClasses\GH_ObjectivismObject.cs" />
     <Compile Include="ObjectivismInfo.cs" />
-    <Compile Include="ObjectivismObject.cs" />
-    <Compile Include="ObjectProperty.cs" />
-    <Compile Include="Param_ExtraObjectProperty.cs" />
-    <Compile Include="Param_OutputObjectProperty.cs" />
+    <Compile Include="ObjectClasses\ObjectivismObject.cs" />
+    <Compile Include="ObjectClasses\ObjectProperty.cs" />
+    <Compile Include="Parameters\Param_ExtraObjectProperty.cs" />
+    <Compile Include="Parameters\Param_OutputObjectProperty.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Param_NewObjectProperty.cs" />
+    <Compile Include="Parameters\Param_NewObjectProperty.cs" />
     <Compile Include="Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -96,14 +97,15 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <None Include="objchange.png" />
+    <None Include="Icons\objchange.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="objcreate.png" />
+    <None Include="Icons\objcreate.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="objexplode.png" />
+    <None Include="Icons\objexplode.png" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

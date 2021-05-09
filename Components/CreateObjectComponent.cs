@@ -7,6 +7,7 @@ using Grasshopper.Kernel.Types;
 using Grasshopper.Kernel.Data;
 using System.Windows.Forms;
 using static Objectivism.Util;
+using static Objectivism.PropertyRetriever;
 
 
 namespace Objectivism
@@ -65,7 +66,7 @@ namespace Objectivism
             var data = new List<(string Name, ObjectProperty Property)>();
             for(int i = 0; i < Params.Input.Count; i++)
             {
-                data.Add(GetPropertyData(DA, i, this));
+                data.Add(RetrieveProperties(DA, i, this));
             }
             var obj = new ObjectivismObject(data, typeName);
             var ghObj = new GH_ObjectivismObject(obj);
