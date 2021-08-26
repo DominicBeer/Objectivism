@@ -1,40 +1,28 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Grasshopper.Kernel;
 using Grasshopper.Kernel.Types;
-using Grasshopper.Kernel.Data;
-using GH_IO;
-using GH_IO.Serialization;
-using Rhino.Render;
 using Rhino.Geometry;
-using static Objectivism.Util;
-using System.Windows.Forms;
 using System.Reflection;
 namespace Objectivism
 {
-    /*
-     * Originally this class would be changed for v7 version that had extra line for dealing with SubD. 
-     * Now this is done with reflection, only one gha is required for both v6 and v7. 
-     * It is a bit slow, may choose to fork two versions later.
-     */
+
     static class DeReferenceGeometryUtil
     {
+        /*I am convinced this should be easier to do, just using IGH_GeometricGoo.DuplicateGeometry() didn't work,
+        did not seem to be properly duplicated when applying the transforms. This however does work. */
         internal static IGH_GeometricGoo DeReferenceWhereRequired(IGH_GeometricGoo geom)
         {
             if (geom.IsReferencedGeometry)
             {
                 geom.LoadGeometry();
-                   
-                //Really want c# 9 switch expressions
+
+                //As far as I am aware only these geometry types support direct reference from Rhino.   
                 if (geom is GH_Brep brep) { return new GH_Brep((Brep)brep.Value.Duplicate()); }
                 if (geom is GH_Curve curve) { return new GH_Curve((Curve)curve.Value.Duplicate()); }
                 if (geom is GH_Mesh mesh) { return new GH_Mesh((Mesh)mesh.Value.Duplicate()); }
                 if (geom is GH_Point point) { return new GH_Point(point.Value); }
                 if (geom is GH_Surface surface) { return new GH_Surface((Brep)surface.Value.Duplicate()); }
                 //if (geom is GH_SubD subd) { return new GH_SubD((SubD)subd.Value.Duplicate()); }
+                //(Building for Rhino 6, subD workds with the reflection method.)
 
                 //If none of the hard coded cases fit use reflection to copy the object
                 return DeReferenceWithReflection(geom);
@@ -59,7 +47,9 @@ namespace Objectivism
                     {
                         newGoo = (IGH_GeometricGoo)Activator.CreateInstance(geomType, rhinoGeom);
                     }
-                    catch { newGoo = geom; }
+                    //Plugins that implement IGH_GeometricGoo may not have a constructor like above
+                    //In this case revert to DuplicateGeometry and hope it is implemented properly. 
+                    catch { newGoo = geom.DuplicateGeometry(); } 
                     geom = newGoo;
                 }
 

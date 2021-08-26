@@ -59,13 +59,13 @@ namespace Objectivism
             objParam.Description = "Object to modify";
             objParam.Access = GH_ParamAccess.item;
             objParam.ObjectChanged += ObjectWireChangedHandler;
-
+            /*
             var param = new Param_ExtraObjectProperty();
             param.Name = "PropertyName";
             param.nickNameCache = defaultNickName + "1";
             param.NickName = param.nickNameCache;
             param.Description = description;
-            pManager.AddParameter(param);
+            pManager.AddParameter(param);*/
         }
 
         private void ObjectWireChangedHandler(IGH_DocumentObject sender, GH_ObjectChangedEventArgs e)
@@ -189,6 +189,10 @@ namespace Objectivism
         public void VariableParameterMaintenance()
         {
             this.UpdatePropertyNames();
+            for (int i = 1; i < Params.Input.Count; i++)
+            {
+                Params.Input[i].Optional = true;
+            }
             foreach (var param in Params.Input)
             {
                 if (param is Param_ExtraObjectProperty extraParam)

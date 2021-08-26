@@ -101,6 +101,10 @@ namespace Objectivism
         public void VariableParameterMaintenance()
         {
             var dynamicParams = Params.Input.ToList();
+            foreach(var param in dynamicParams)
+            {
+                param.Optional = true;
+            }
             var emptyParams = dynamicParams.Where(p => p.NickName == String.Empty);
             foreach (var param in emptyParams)
             {

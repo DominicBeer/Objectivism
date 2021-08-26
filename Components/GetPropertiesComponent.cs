@@ -22,7 +22,7 @@ namespace Objectivism
         {
             this.Message = getGraftMessage();
         }
-        private bool GraftItems = true;
+        private bool GraftItems = false;
         private string getGraftMessage() => GraftItems
             ? "Graft all properties"
             : "Graft lists + trees";
@@ -133,6 +133,7 @@ namespace Objectivism
             }
             else
             {
+                this.AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "Can only get properties from ojects built with Objectivism");
                 return;
             }
             PropertyNames.UnionWith(obj.AllProperties);

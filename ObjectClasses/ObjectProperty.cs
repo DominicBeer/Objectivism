@@ -23,11 +23,16 @@ namespace Objectivism
         { 
             get
             {
-                if (this.HasGeometry)
+                if (HasGeometry)
                 {
-                    var boxes = Data
-                        .Where(goo => goo is IGH_GeometricGoo)
-                        .Select(goo => ((IGH_GeometricGoo)goo).Boundingbox);
+                    var boxes = new List<BoundingBox>();
+                    foreach (var goo in Data)
+                    {
+                        if (goo is IGH_GeometricGoo geom)
+                        {
+                            boxes.Add(geom.Boundingbox);
+                        }
+                    }
                     return UnionBoxes(boxes);
                 }
                 else
@@ -141,29 +146,35 @@ namespace Objectivism
 
         public void AppendRenderGeometry(GH_RenderArgs args, RenderMaterial material)
         {
-            Data
-                .Where(goo => goo is IGH_RenderAwareData)
-                .Select(goo => (IGH_RenderAwareData)goo)
-                .ToList()
-                .ForEach(goo => goo.AppendRenderGeometry(args, material));
+            foreach(var goo in Data)
+            {
+                if(goo is IGH_RenderAwareData renderGoo)
+                {
+                    renderGoo.AppendRenderGeometry(args, material);
+                }
+            }
         }
 
         public void DrawViewportWires(GH_PreviewWireArgs args)
         {
-            Data
-                .Where(goo => goo is IGH_PreviewData)
-                .Select(goo => (IGH_PreviewData)goo)
-                .ToList()
-                .ForEach(goo => goo.DrawViewportWires(args));
+            foreach (var goo in Data)
+            {
+                if (goo is IGH_PreviewData previewGoo)
+                {
+                    previewGoo.DrawViewportWires(args);
+                }
+            }
         }
 
         public void DrawViewportMeshes(GH_PreviewMeshArgs args)
         {
-            Data
-                .Where(goo => goo is IGH_PreviewData)
-                .Select(goo => (IGH_PreviewData)goo)
-                .ToList()
-                .ForEach(goo => goo.DrawViewportMeshes(args));
+            foreach (var goo in Data)
+            {
+                if (goo is IGH_PreviewData previewGoo)
+                {
+                    previewGoo.DrawViewportMeshes(args);
+                }
+            }
         }
     }
 }

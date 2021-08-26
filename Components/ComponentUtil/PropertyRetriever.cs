@@ -4,8 +4,6 @@ using Grasshopper.Kernel.Types;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Objectivism
 {
@@ -21,7 +19,7 @@ namespace Objectivism
                 IGH_Goo item = null;
                 if (!DA.GetData(paramIndex, ref item))
                 {
-                    @this.AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, $"{name} has no input and has been assigned null data");
+                    @this.AddRuntimeMessage(GH_RuntimeMessageLevel.Remark, $"{name} has no input and has been assigned null data");
                 }
                 prop = new ObjectProperty(item);
             }

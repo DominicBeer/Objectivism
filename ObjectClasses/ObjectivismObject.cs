@@ -10,6 +10,7 @@ using GH_IO;
 using GH_IO.Serialization;
 using Rhino.Geometry;
 using Rhino.Render;
+using System.Dynamic;
 
 namespace Objectivism
 {
@@ -20,15 +21,24 @@ namespace Objectivism
 
         public List<string> AllProperties => this.properties.Select(x => x.Name).ToList();
         public string TypeName { get; private set; }
+        private BoundingBox boxCache;
+        private bool boxIsCached = false;
         public BoundingBox BoundingBox
         {
             get
             {
+                if (boxIsCached)
+                {
+                    return boxCache;
+                }
                 var boxes = properties
                     .Select(pair => pair.Property)
                     .Where(p => p.HasGeometry)
-                    .Select(p => p.BoundingBox);
-                return Util.UnionBoxes(boxes);
+                    .Select(p => p.BoundingBox)
+                    .ToList();
+                boxCache = Util.UnionBoxes(boxes);
+                boxIsCached = true;
+                return boxCache;
             }
         }
 
@@ -177,6 +187,48 @@ namespace Objectivism
         public void AppendRenderGeometry(GH_RenderArgs args, RenderMaterial material)
         {
             properties.ForEach(prop => prop.Property.AppendRenderGeometry(args,material));
+        }
+
+        internal dynamic ToDynamic()
+        {
+            var eo = new ExpandoObject();
+            var eoColl = (ICollection<KeyValuePair<string, object>>)eo;
+            foreach(var pair in properties)
+            {
+                var name = pair.Name;
+                var prop = pair.Property;
+                if(prop.Access == PropertyAccess.Item)
+                {
+                    var item = prop != null
+                        ? ProcessGoo(prop.Data.get_FirstItem(false))
+                        : null;
+                    eoColl.Add(new KeyValuePair<string, object>(name, item));
+                }
+                if (prop.Access == PropertyAccess.List)
+                {
+                    var list = prop != null
+                        ? prop.Data.Branches[0].Select(ProcessGoo).ToList()
+                        : new List<object>();
+                    eoColl.Add(new KeyValuePair<string, object>(name, list));
+                }
+                if (prop.Access == PropertyAccess.Tree)
+                {
+                    var tree = prop != null
+                        ? prop.Data.ToDataTree(ProcessGoo)
+                        : new Grasshopper.DataTree<object>();
+                    eoColl.Add(new KeyValuePair<string, object>(name, tree));
+                }
+            }
+            dynamic eoDynamic = eo;
+            return eoDynamic;
+
+        }
+
+        
+
+        private static object ProcessGoo(IGH_Goo goo)
+        {
+            return goo.UnwrapGoo().PackSubObjects();
         }
 
     }

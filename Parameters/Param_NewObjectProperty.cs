@@ -26,7 +26,7 @@ namespace Objectivism
             ObjectChanged += NickNameChangedEventHandler;
         }
 
-
+        
 
         internal void CommitNickName()
         {

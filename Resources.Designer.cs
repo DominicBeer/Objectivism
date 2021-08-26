@@ -83,6 +83,16 @@ namespace Objectivism {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap ObjectivismLogoSmall {
+            get {
+                object obj = ResourceManager.GetObject("ObjectivismLogoSmall", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap objexplode {
             get {
                 object obj = ResourceManager.GetObject("objexplode", resourceCulture);

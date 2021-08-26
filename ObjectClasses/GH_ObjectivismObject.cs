@@ -129,5 +129,10 @@ namespace Objectivism
         {
             return new GH_ObjectivismObject(Value.Morph(xmorph));
         }
+
+        public override object ScriptVariable()
+        {
+            return Value.ToDynamic();
+        }
     }
 }

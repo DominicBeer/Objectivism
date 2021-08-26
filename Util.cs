@@ -1,15 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using GH_IO;
 using GH_IO.Serialization;
 using Grasshopper.Kernel.Types;
 using Grasshopper.Kernel.Data;
 using Rhino.Geometry;
-using Grasshopper.Kernel;
-
+using Grasshopper;
 namespace Objectivism
 {
     static class Util
@@ -59,12 +55,14 @@ namespace Objectivism
             tree.Read(treeReader);
             return tree;
         }
-        public static BoundingBox UnionBoxes(IEnumerable<BoundingBox> boxes)
+        public static BoundingBox UnionBoxes(List<BoundingBox> boxes)
         {
-            var points = boxes
-                .Select(box => box.Min)
-                .Concat(boxes
-                .Select(box => box.Max));
+            var points = new List<Point3d>(boxes.Count*2);
+            foreach(var box in boxes)
+            {
+                points.Add(box.Min);
+                points.Add(box.Max);
+            }
             return new BoundingBox(points);
         }
 
@@ -109,6 +107,44 @@ namespace Objectivism
                 tree.AppendRange(new List<IGH_Goo>());
                 return tree;
             } 
+        }
+
+        internal static object UnwrapGoo(this IGH_Goo goo)
+        {
+            var goo2 = goo.Duplicate();
+            var type = goo2.GetType();
+            var propInfo = type.GetProperty("Value");
+            if (propInfo != null)
+            {
+                return propInfo.GetValue(goo2);
+            }
+            else
+            {
+                return goo2;
+            }
+        }
+
+        internal static object PackSubObjects(this object obj)
+        {
+            if (obj is ObjectivismObject objectivismObject)
+            {
+                return objectivismObject.ToDynamic();
+            }
+            else
+            {
+                return obj;
+            }
+        }
+
+        internal static DataTree<object> ToDataTree(this GH_Structure<IGH_Goo> gooTree, Func<IGH_Goo, object> deGoo)
+        {
+            var tree = new DataTree<object>();
+            foreach(var path in gooTree.Paths)
+            {
+                var branch = gooTree[path].Select(deGoo);
+                tree.AddRange(branch,path);
+            }
+            return tree;
         }
     }
 }

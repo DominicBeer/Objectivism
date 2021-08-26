@@ -18,7 +18,7 @@ namespace Objectivism
             get
             {
                 //Return a 24x24 pixel bitmap to represent this GHA library.
-                return null;
+                return Resources.ObjectivismLogoSmall;
             }
         }
         public override string Description
@@ -42,7 +42,7 @@ namespace Objectivism
             get
             {
                 //Return a string identifying you or your company.
-                return "";
+                return "Skyhook";
             }
         }
         public override string AuthorContact
