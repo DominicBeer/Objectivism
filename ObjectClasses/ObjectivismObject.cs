@@ -83,14 +83,23 @@ namespace Objectivism
         }
 
 
-        internal ObjectivismObject AddOrChangeProperties(List<(string name, ObjectProperty newProperty)> changes)
+        internal (ObjectivismObject obj, AccessInfo conflicts) AddOrChangeProperties(List<(string name, ObjectProperty newProperty)> changes)
         {
             var newObj = new ObjectivismObject(this);
             var numberOfExistingProps = newObj.properties.Count;
+            AccessInfo accessInfo = new AccessInfo();
             foreach ((string name, var newProp) in changes)
             {
+               
                 if (newObj.propertyGetter.ContainsKey(name))
-                {
+                { 
+                    var currentAccess = newObj.GetProperty(name).Access;
+                    var newAccess = newProp.Access;
+                    if(newAccess != currentAccess)
+
+                    {
+                        accessInfo.AddConflict(name);
+                    }
                     newObj.properties[propertyGetter[name]] = (name, newProp);
                 }
                 else
@@ -100,7 +109,7 @@ namespace Objectivism
                     numberOfExistingProps++;
                 }
             }
-            return newObj;
+            return (newObj, accessInfo);
         }
         internal ObjectivismObject AddProperties(List<(string name, ObjectProperty newProperty)> additions)
         {
@@ -228,8 +237,19 @@ namespace Objectivism
 
         private static object ProcessGoo(IGH_Goo goo)
         {
-            return goo.UnwrapGoo().PackSubObjects();
+            return goo != null ? goo.ScriptVariable() : null;
         }
 
+        internal class AccessInfo
+        {
+            List<string> Conflicts;
+            public void AddConflict(string propertyName) => Conflicts.Add(propertyName);
+            public void BroadcastConflicts(GH_Component comp) => Conflicts.ForEach(conflict => comp.AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, $"{conflict} has its access level changed"));
+
+            public AccessInfo()
+            {
+                Conflicts = new List<string>();
+            }
+        }
     }
 }

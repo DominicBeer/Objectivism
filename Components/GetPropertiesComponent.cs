@@ -16,7 +16,7 @@ namespace Objectivism
         /// Initializes a new instance of the GetPropertiesComponent class.
         /// </summary>
         public GetPropertiesComponent()
-          : base("GetObjectProperties", "Object.",
+          : base("Get Object Properties", "Object.",
               "Retrieve stored properties of an Objectivism object",
               "Sets", "Objectivism")
         {

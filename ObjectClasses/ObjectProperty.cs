@@ -103,7 +103,11 @@ namespace Objectivism
             {
                 return geom.DuplicateGeometry();
             }
-            return goo.Duplicate();
+            if (goo != null)
+            {
+                return goo.Duplicate();
+            }
+            else { return goo; }
         }
 
         public bool WriteProp(GH_IWriter writer)

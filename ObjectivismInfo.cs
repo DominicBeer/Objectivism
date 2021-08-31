@@ -42,7 +42,7 @@ namespace Objectivism
             get
             {
                 //Return a string identifying you or your company.
-                return "Skyhook";
+                return "Dominic Beer";
             }
         }
         public override string AuthorContact

@@ -154,8 +154,8 @@ namespace Objectivism
             {
                 updates.Add(RetrieveProperties(DA, i, this));
             }
-            var newObj = obj.AddOrChangeProperties(updates);
-
+            (var newObj, var accessConflict) = obj.AddOrChangeProperties(updates);
+            accessConflict.BroadcastConflicts(this);
             DA.SetData(0, new GH_ObjectivismObject(newObj));
 
         }
