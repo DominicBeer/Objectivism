@@ -194,8 +194,7 @@ namespace Objectivism
                     var newPath = new GH_Path(path.Indices.Concat(index).ToArray());
                     var tree = new GH_Structure<IGH_Goo>();
                     tree.AppendRange(list, newPath);
-                    DA.SetDataTree(i, tree);
-                        
+                    DA.SetDataTree(i, tree);    
                 }
                 if (access == PropertyAccess.Tree)
                 {

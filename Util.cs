@@ -97,7 +97,11 @@ namespace Objectivism
             return series.Select((x, i) => (i, x));
         }
 
-        
+
+        public static string SpacesToUnderscores(this string @this)
+        {
+            return @this.Replace(" ", "_");
+        }
 
         internal static GH_Structure<IGH_Goo> EmptyTree 
         { 

@@ -71,6 +71,7 @@
     <Compile Include="Components\ComponentUtil\PropertyRetriever.cs" />
     <Compile Include="Components\CreateObjectComponent.cs" />
     <Compile Include="Components\GetPropertiesComponent.cs" />
+    <Compile Include="Components\ObjectToTree.cs" />
     <Compile Include="ObjectClasses\GH_ObjectivismObject.cs" />
     <Compile Include="ObjectivismInfo.cs" />
     <Compile Include="ObjectClasses\ObjectivismObject.cs" />

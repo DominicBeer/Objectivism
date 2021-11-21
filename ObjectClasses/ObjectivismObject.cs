@@ -204,7 +204,7 @@ namespace Objectivism
             var eoColl = (ICollection<KeyValuePair<string, object>>)eo;
             foreach(var pair in properties)
             {
-                var name = pair.Name;
+                var name = pair.Name.SpacesToUnderscores();
                 var prop = pair.Property;
                 if(prop.Access == PropertyAccess.Item)
                 {
@@ -234,7 +234,7 @@ namespace Objectivism
         }
 
         
-
+        
         private static object ProcessGoo(IGH_Goo goo)
         {
             return goo != null ? goo.ScriptVariable() : null;
