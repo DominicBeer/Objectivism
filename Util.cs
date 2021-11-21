@@ -10,6 +10,20 @@ namespace Objectivism
 {
     static class Util
     {
+
+        public static IEnumerable<TNew> WhereIsType<TNew>(this IEnumerable<object> seq)
+        {
+            var outList = new List<TNew>();
+            foreach(var val in seq)
+            {
+                if(val is TNew newval)
+                {
+                    outList.Add(newval);
+                }
+            }
+            return outList;
+        }
+
         public static bool SetGoo(this GH_IWriter writer, string itemName, IGH_Goo item)
         {
             var itemWriter = writer.CreateChunk(itemName);

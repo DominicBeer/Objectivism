@@ -107,7 +107,7 @@ namespace Objectivism.Components
                         ? prop.Data.get_FirstItem(false)
                         : null;
                     var path = new List<int>() { i };
-                    path.AddRange(DA.ParameterTargetPath(i).Indices);
+                    path.AddRange(DA.ParameterTargetPath(0).Indices);
                     path.Add(DA.ParameterTargetIndex(0));
                     var newPath = new GH_Path(path.ToArray());
                     outTree.Append(item, newPath);
@@ -119,7 +119,7 @@ namespace Objectivism.Components
                         ? prop.Data.Branches[0]
                         : new List<IGH_Goo>();
                     var path = new List<int>() { i };
-                    path.AddRange(DA.ParameterTargetPath(i).Indices);
+                    path.AddRange(DA.ParameterTargetPath(0).Indices);
                     path.Add(DA.ParameterTargetIndex(0));
                     var newPath = new GH_Path(path.ToArray());
                     outTree.AppendRange(list, newPath);
@@ -131,7 +131,7 @@ namespace Objectivism.Components
                         ? prop.Data
                         : Util.EmptyTree;
                     var path = new List<int>() { i };
-                    path.AddRange(DA.ParameterTargetPath(i).Indices);
+                    path.AddRange(DA.ParameterTargetPath(0).Indices);
                     path.Add(DA.ParameterTargetIndex(0));
                     for (int j = 0; j < tree.PathCount; j++)
                     {

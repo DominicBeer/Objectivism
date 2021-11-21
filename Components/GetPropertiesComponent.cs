@@ -1,6 +1,7 @@
 ﻿using GH_IO.Serialization;
 using Grasshopper.Kernel;
 using Grasshopper.Kernel.Data;
+using Grasshopper.Kernel.Parameters;
 using Grasshopper.Kernel.Types;
 using Rhino.Geometry;
 using System;
@@ -71,7 +72,10 @@ namespace Objectivism
 
         private string GetTypeName()
         {
-            var allObjects = this.Params.Input[0].VolatileData;
+            var input = (Param_GenericObject)this.Params.Input[0];
+            var allObjects = input.PersistentDataCount != 0
+                ? input.PersistentData
+                : input.VolatileData;
             if (!allObjects.IsEmpty)
             {
                 if (allObjects is GH_Structure<IGH_Goo> tree)
@@ -227,7 +231,7 @@ namespace Objectivism
             VariableParameterMaintenance();
             foreach(var p in Params.Output)
             {
-                if(p is Param_OutputObjectProperty o)
+                if(p is Param_ObjectivismOutput o)
                 {
                     o.CommitNickName();
                 }
@@ -248,7 +252,7 @@ namespace Objectivism
 
         public IGH_Param CreateParameter(GH_ParameterSide side, int index)
         {
-            return new Param_OutputObjectProperty();
+            return new Param_ObjectivismOutput();
         }
 
         public bool DestroyParameter(GH_ParameterSide side, int index)
@@ -264,7 +268,7 @@ namespace Objectivism
                 {
                     param.NickName = NextUnusedName();
                 }
-                if(param is Param_OutputObjectProperty outputParam)
+                if(param is Param_ObjectivismOutput outputParam)
                 {
                     outputParam.AllPropertyNames = this.PropertyNames;
                 }
@@ -294,7 +298,7 @@ namespace Objectivism
             var unusedNames = GetUnusedNames();
             foreach(var name in unusedNames)
             {
-                var param = new Param_OutputObjectProperty();
+                var param = new Param_ObjectivismOutput();
                 Params.RegisterOutputParam(param);
                 param.ExpireSolution(false);
             }

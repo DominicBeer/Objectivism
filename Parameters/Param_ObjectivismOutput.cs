@@ -10,20 +10,23 @@ using Grasshopper.Kernel.Types;
 
 namespace Objectivism
 {
-    public class Param_OutputObjectProperty: Param_GenericObject
+    public class Param_ObjectivismOutput: Param_GenericObject
     {
         public override Guid ComponentGuid => new Guid("1b625488-3ec8-4189-8d14-6de1b0c9effd");
+        protected virtual string outputType => "Property";
+        protected virtual string outputTypePlural => "Properties";
+        protected string outputTyputLC => outputType.ToLower();
         internal string nickNameCache = "";
         public override GH_Exposure Exposure => GH_Exposure.hidden;
         internal void CommitNickName() { this.nickNameCache = NickName; }
-        public override string TypeName => "Object Property Data";
+        public override string TypeName => $"Object {outputType} Data";
         internal HashSet<string> AllPropertyNames = new HashSet<string>();
-        public Param_OutputObjectProperty() : base()
+        public Param_ObjectivismOutput() : base()
         {
-            Name = "Property";
+            Name = outputType;
             nickNameCache = String.Empty;
             NickName = String.Empty;
-            Description = "Retrieved Property ";
+            Description = $"Retrieved {outputType} ";
             Access = GH_ParamAccess.tree;
             ObjectChanged += NickNameChangedEventHandler;
         }
@@ -34,7 +37,7 @@ namespace Objectivism
             {
                 if (NickName != nickNameCache)
                 {
-                    this.AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "Property input name changed but object not updated, right click on component and press \"Update\"");
+                    this.AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, $"{outputType} name changed but component not updated, right click on component and press \"Update\"");
                 }
                 else
                 {
@@ -47,7 +50,7 @@ namespace Objectivism
         {
             base.AppendAdditionalMenuItems(menu);
             Menu_AppendSeparator(menu);
-            var button = Menu_AppendItem(menu, "Properties");
+            var button = Menu_AppendItem(menu, outputTypePlural);
             var dropDownButtons = this.AllPropertyNames.Select(n => new ToolStripMenuItem(n, null, PropertyClickEventHandler)).ToArray();
             button.DropDownItems.AddRange(dropDownButtons);
             
@@ -55,7 +58,7 @@ namespace Objectivism
 
         private void PropertyClickEventHandler(object sender, EventArgs e)
         {
-            RecordUndoEvent("Change property name");
+            RecordUndoEvent($"Change {outputTyputLC} name");
             if(sender is ToolStripMenuItem button)
             {
                 this.NickName = button.Text;
@@ -63,5 +66,12 @@ namespace Objectivism
                 parent.ExpireSolution(true);
             }
         }
+    }
+
+    public class Param_ObjectivismObjectTypeOutput: Param_ObjectivismOutput
+    {
+        protected override string outputType => "Type";
+        protected override string outputTypePlural => "Types";
+        public override Guid ComponentGuid => new Guid("55bf273b-08ac-4cd7-a3a2-27bb1228a58c");
     }
 }
