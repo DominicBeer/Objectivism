@@ -20,7 +20,7 @@ namespace Objectivism.Components
               "Sets", "Objectivism")
         {
         }
-
+        
         private HashSet<string> TypeNames = new HashSet<string>();
         internal List<string> GetUnusedNames() => TypeNames.Except(Params.Output.Select(p => p.NickName)).ToList();
         internal string NextUnusedName()
@@ -147,7 +147,7 @@ namespace Objectivism.Components
                 {
                     outputParam.AllPropertyNames = this.TypeNames;
                 }
-            }
+            } 
         }
 
         public override void AppendAdditionalMenuItems(ToolStripDropDown menu)
