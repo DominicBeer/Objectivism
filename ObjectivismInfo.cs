@@ -26,7 +26,7 @@ namespace Objectivism
             get
             {
                 //Return a short string describing the purpose of this GHA library.
-                return "";
+                return "Objectivism allows you to create objects in Grasshopper, enabling better management of data";
             }
         }
         public override Guid Id
