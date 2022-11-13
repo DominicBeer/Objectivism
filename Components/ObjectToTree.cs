@@ -15,7 +15,7 @@ namespace Objectivism.Components
         /// </summary>
         public ObjectToTree()
           : base("Object To Tree", "ToTree",
-              "Turn an objectivism object into a tree",
+              "Turn an objectivism object into a tree. Also returns a mirror tree of the property names",
               "Sets", "Objectivism")
         {
         }
@@ -162,9 +162,7 @@ namespace Objectivism.Components
         {
             get
             {
-                //You can add image files to your project resources and access them like this:
-                // return Resources.IconForThisComponent;
-                return null;
+                return Resources.ObjToTree;
             }
         }
 
