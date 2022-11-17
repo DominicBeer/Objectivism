@@ -56,7 +56,7 @@ namespace Objectivism
         {
             if (!JustOneTypeName())
             {
-                this.AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "You are trying to retrieve properties from objects of of different types in one component - proceed with caution");
+                this.AddRuntimeMessage(GH_RuntimeMessageLevel.Remark, "Multiple types detected");
                 this.NickName = "MultipleTypes.";
             }
             else
