@@ -21,6 +21,7 @@ namespace Objectivism
               "Sets", "Objectivism")
         {
             NickNameCache = this.NickName;
+            this.IconDisplayMode = GH_IconDisplayMode.name;
             this.ObjectChanged += NickNameChangedEventHandler;
         }
 

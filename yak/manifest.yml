@@ -1,0 +1,9 @@
+name: Objectivism
+version: 1.0.0.1
+authors:
+  - Dominic Beer 
+description: Objectivism brings object-oriented programming to Grasshopper, enabling users to encapsulate data inside objects as named properties.
+url: "https://github.com/DominicBeer/Objectivism"
+keywords:
+ - object
+icon: logo.png

@@ -21,6 +21,7 @@ namespace Objectivism
               "Retrieve stored properties of an Objectivism object",
               "Sets", "Objectivism")
         {
+            this.IconDisplayMode = GH_IconDisplayMode.name;
             this.Message = getGraftMessage();
         }
         private bool GraftItems = false;

@@ -21,6 +21,18 @@
      id="defs2">
     <linearGradient
        inkscape:collect="always"
+       id="linearGradient1325">
+      <stop
+         style="stop-color:#000000;stop-opacity:0;"
+         offset="0"
+         id="stop1321" />
+      <stop
+         style="stop-color:#000000;stop-opacity:1"
+         offset="1"
+         id="stop1323" />
+    </linearGradient>
+    <linearGradient
+       inkscape:collect="always"
        id="linearGradient8685">
       <stop
          style="stop-color:#ffffff;stop-opacity:1;"
@@ -328,7 +340,7 @@
        gradientTransform="matrix(3.7795276,0,0,3.7795276,0.17677671,-1.4142136)" />
     <linearGradient
        inkscape:collect="always"
-       xlink:href="#linearGradient3561"
+       xlink:href="#linearGradient1325"
        id="linearGradient3568"
        gradientUnits="userSpaceOnUse"
        gradientTransform="matrix(1,0,0,0.88441524,-6.2177083,35.246523)"
@@ -1074,9 +1086,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="2"
-     inkscape:cx="216.75"
-     inkscape:cy="185"
+     inkscape:zoom="5.6568542"
+     inkscape:cx="307.32629"
+     inkscape:cy="201.34866"
      inkscape:document-units="mm"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -2571,9 +2583,9 @@
        cy="48.591366"
        rx="8.4349213"
        ry="8.1106367"
-       inkscape:export-filename="objectivismLogoSmall.png"
-       inkscape:export-xdpi="21.955351"
-       inkscape:export-ydpi="21.955351" />
+       inkscape:export-filename="objectivismLogoMed.png"
+       inkscape:export-xdpi="58.547604"
+       inkscape:export-ydpi="58.547604" />
     <path
        inkscape:connector-curvature="0"
        style="opacity:1;vector-effect:none;fill:#6b6b6b;fill-opacity:0.88383837;fill-rule:nonzero;stroke:none;stroke-width:0.57018161;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:stroke markers fill"
