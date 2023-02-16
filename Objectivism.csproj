@@ -72,6 +72,13 @@
     <Compile Include="Components\FilterByType.cs" />
     <Compile Include="Components\GetPropertiesComponent.cs" />
     <Compile Include="Components\ObjectToTree.cs" />
+    <Compile Include="Components\FilterByTypeV2.cs" />
+    <Compile Include="Forms\ChangePropertyNameForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\ChangePropertyNameForm.Designer.cs">
+      <DependentUpon>ChangePropertyNameForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="ObjectClasses\GH_ObjectivismObject.cs" />
     <Compile Include="ObjectivismInfo.cs" />
     <Compile Include="ObjectClasses\ObjectivismObject.cs" />
@@ -92,6 +99,9 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Forms\ChangePropertyNameForm.resx">
+      <DependentUpon>ChangePropertyNameForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>

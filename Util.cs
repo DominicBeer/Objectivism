@@ -6,10 +6,22 @@ using Grasshopper.Kernel.Types;
 using Grasshopper.Kernel.Data;
 using Rhino.Geometry;
 using Grasshopper;
+using Grasshopper.Kernel;
+
 namespace Objectivism
 {
     static class Util
     {
+
+        public static IGH_Component GetParentComponent(this IGH_Param param)
+        {
+            var obj = param.Attributes.GetTopLevel.DocObject;
+            if(obj != null && obj is IGH_Component c)
+            {
+                return c;
+            }
+            return null;
+        }
 
         public static IEnumerable<TNew> WhereIsType<TNew>(this IEnumerable<object> seq)
         {

@@ -7,6 +7,7 @@ using System.Windows.Forms;
 using Grasshopper.Kernel;
 using Grasshopper.Kernel.Parameters;
 using Grasshopper.Kernel.Types;
+using Objectivism.Forms;
 
 namespace Objectivism
 {
@@ -34,14 +35,19 @@ namespace Objectivism
             {
                 if (NickName != nickNameCache)
                 {
-                    this.AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "Property input name changed but object not updated, right click on component and press \"Update Object\"");
+                    this.AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "Property input name changed but object not updated, right click on component and press \"Recompute\"");
                 }
             }
         }
 
         public override void AppendAdditionalMenuItems(ToolStripDropDown menu)
         {
+
             base.AppendAdditionalMenuItems(menu);
+
+            Menu_AppendSeparator(menu);
+
+            var recomputeButton = Menu_AppendItem(menu, "Recompute", RecomputeHandler);
 
             Menu_AppendSeparator(menu);
 
@@ -58,6 +64,35 @@ namespace Objectivism
             var button = Menu_AppendItem(menu, "Properties");
             var dropDownButtons = this.AllPropertyNames.Select(n => new ToolStripMenuItem(n, null, PropertyClickEventHandler)).ToArray();
             button.DropDownItems.AddRange(dropDownButtons);
+
+            Menu_AppendSeparator(menu);
+            var changeButton = Menu_AppendItem(menu, "Change Property Name", LaunchChangeDialog, true);
+
+        }
+
+        private void RecomputeHandler(object sender, EventArgs e)
+        {
+            var parent = this.GetParentComponent();
+            if (parent != null)
+            {
+                parent.Params.Input.ForEach(p => p.ExpireSolution(false));
+                parent.ExpireSolution(true);
+            }
+        }
+
+        //When it is updated to cope with multiple types on arrival
+
+        private void LaunchChangeDialog(object sender, EventArgs e)
+        {
+            var parent = this.GetParentComponent();
+            if (parent != null)
+            {
+                var comp = (IHasMultipleTypes)parent;
+                var tn = comp.TypeNames.FirstOrDefault();
+                var multiple = comp.TypeNames.Count() != 1;
+                var form = new ChangePropertyNameForm(this.NickName, tn, this.OnPingDocument(), multiple);
+                form.ShowDialog();
+            }
 
         }
 

@@ -37,7 +37,7 @@ namespace Objectivism
             {
                 if (NickName != nickNameCache)
                 {
-                    this.AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, $"{outputType} name changed but component not updated, right click on component and press \"Update\"");
+                    this.AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, $"{outputType} name changed but component not updated, right click on component and press \"Recompute\"");
                 }
                 else
                 {
@@ -49,11 +49,25 @@ namespace Objectivism
         public override void AppendAdditionalMenuItems(ToolStripDropDown menu)
         {
             base.AppendAdditionalMenuItems(menu);
+            
+            Menu_AppendSeparator(menu);
+            var recomputeButton = Menu_AppendItem(menu, "Recompute", RecomputeHandler);
             Menu_AppendSeparator(menu);
             var button = Menu_AppendItem(menu, outputTypePlural);
             var dropDownButtons = this.AllPropertyNames.Select(n => new ToolStripMenuItem(n, null, PropertyClickEventHandler)).ToArray();
             button.DropDownItems.AddRange(dropDownButtons);
             
+        }
+
+        private void RecomputeHandler(object sender, EventArgs e)
+        {
+            var parent = this.GetParentComponent();
+            if (parent != null)
+            {
+                parent.Params.Input.ForEach(p => p.ExpireSolution(false));
+                parent.ExpireSolution(true);
+                
+            }
         }
 
         private void PropertyClickEventHandler(object sender, EventArgs e)

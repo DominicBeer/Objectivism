@@ -10,7 +10,7 @@ using static Objectivism.PropertyRetriever;
 using Grasshopper.Kernel.Parameters;
 namespace Objectivism
 {
-    public class AddOrChangePropertiesComponent : GH_Component,IGH_VariableParameterComponent
+    public class AddOrChangePropertiesComponent : GH_Component,IGH_VariableParameterComponent, IHasMultipleTypes
     {
         /// <summary>
         /// Initializes a new instance of the ChangePropertiesComponent class.
@@ -65,7 +65,8 @@ namespace Objectivism
             param.nickNameCache = defaultNickName + "1";
             param.NickName = param.nickNameCache;
             param.Description = description;
-            pManager.AddParameter(param);*/
+            pManager.AddParameter(param); 
+            */
         }
 
         private void ObjectWireChangedHandler(IGH_DocumentObject sender, GH_ObjectChangedEventArgs e)
@@ -87,38 +88,35 @@ namespace Objectivism
 
         protected override void BeforeSolveInstance()
         {
+            UpdateTypeNames();
             if(!JustOneTypeName())
             {
-                this.AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "You are trying to change objects of different types in one component - proceed with caution");
+                this.AddRuntimeMessage(GH_RuntimeMessageLevel.Remark, "Mutliple types detected");
             }
             this.UpdatePropertyNames();
             Params.Input.ForEach(CommitParamNames);
             base.BeforeSolveInstance();
         }
 
-        private bool JustOneTypeName()
+        private HashSet<string> typeNames = new HashSet<string>();
+        public HashSet<string> TypeNames => typeNames;
+
+        private void UpdateTypeNames()
         {
-            var typeName = "";
-            bool firstIter = true;
+            typeNames.Clear();
             var data = this.Params.Input[0].VolatileData.AllData(true);
-            foreach( var goo in data)
+            foreach (var goo in data)
             {
                 if (goo is GH_ObjectivismObject ghObj)
                 {
                     var tn = ghObj.Value.TypeName;
-                    if(firstIter)
-                    {
-                        typeName = tn;
-                        firstIter = false;
-                    }
-                    else if (tn != typeName)
-                    {
-                        return false;
-                    }
+                    typeNames.Add(tn);
                 }
             }
-            return true;
         }
+
+        private bool JustOneTypeName() => typeNames.Count <= 1;
+
         private void CommitParamNames(IGH_Param param)
         {
             if (param is Param_ExtraObjectProperty p)
@@ -222,7 +220,7 @@ namespace Objectivism
 
         public override void AppendAdditionalMenuItems(ToolStripDropDown menu)
         {
-            Menu_AppendItem(menu, "Update Object", UpdateObjectEventHandler);
+            Menu_AppendItem(menu, "Recompute", UpdateObjectEventHandler);
         }
 
         private void UpdateObjectEventHandler(object sender, EventArgs e)

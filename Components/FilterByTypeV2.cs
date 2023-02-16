@@ -9,20 +9,17 @@ using System.Windows.Forms;
 
 namespace Objectivism.Components
 {
-    public class FilterByTypeOBSOLETE : GH_Component, IGH_VariableParameterComponent
+    public class FilterByTypeV2 : GH_Component, IGH_VariableParameterComponent
     {
         /// <summary>
         /// Initializes a new instance of the FilterByType class.
         /// </summary>
-        public FilterByTypeOBSOLETE()
-          : base("Filter By Type Old", "Filter",
+        public FilterByTypeV2()
+          : base("Filter By Type", "Filter",
               "Filter objects by their type name",
               "Sets", "Objectivism")
         {
-            
         }
-        public override bool Obsolete => true;
-        public override GH_Exposure Exposure => GH_Exposure.hidden;
 
         private HashSet<string> TypeNames = new HashSet<string>();
         internal List<string> GetUnusedNames() => TypeNames.Except(Params.Output.Select(p => p.NickName)).ToList();
@@ -41,6 +38,9 @@ namespace Objectivism.Components
         protected override void RegisterInputParams(GH_Component.GH_InputParamManager pManager)
         {
             pManager.AddGenericParameter("Object", "O", "Objectivism object to turn into tree", GH_ParamAccess.item);
+            var inp = (Param_GenericObject)this.Params.Input[0];
+            inp.DataMapping = GH_DataMapping.Graft;
+
         }
 
         /// <summary>
@@ -48,7 +48,7 @@ namespace Objectivism.Components
         /// </summary>
         protected override void RegisterOutputParams(GH_Component.GH_OutputParamManager pManager)
         {
-            
+
         }
 
 
@@ -94,13 +94,13 @@ namespace Objectivism.Components
             foreach ((int i, var param) in Params.Output.Enumerate())
             {
                 string name = param.NickName;
-                if(obj.Value.TypeName == name)
+                if (obj.Value.TypeName == name)
                 {
                     DA.SetData(i, obj);
                 }
                 else
                 {
-                    DA.SetData(i, null);
+                    //DA.SetData(i, null);
                 }
             }
         }
@@ -150,7 +150,7 @@ namespace Objectivism.Components
                 {
                     outputParam.AllPropertyNames = this.TypeNames;
                 }
-            } 
+            }
         }
 
         public override void AppendAdditionalMenuItems(ToolStripDropDown menu)
@@ -177,7 +177,7 @@ namespace Objectivism.Components
 
         private void UpdateObjectEventHandler(object sender, EventArgs e)
         {
-            ExpireSolution(true);
+            //ExpireSolution(true);
         }
 
         /// <summary>
@@ -196,7 +196,7 @@ namespace Objectivism.Components
         /// </summary>
         public override Guid ComponentGuid
         {
-            get { return new Guid("615e81f0-484b-4b43-91c4-1f0a211c200c"); }
+            get { return new Guid("91ecf9aa-50ba-4bf4-bd3e-70066350458e"); }
         }
     }
 }

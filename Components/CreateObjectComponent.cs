@@ -12,6 +12,11 @@ using static Objectivism.PropertyRetriever;
 
 namespace Objectivism
 {
+
+    internal interface IHasMultipleTypes
+    {
+        HashSet<string> TypeNames { get; }
+    }
     public class CreateObjectComponent : GH_Component,IGH_VariableParameterComponent
     {
 
@@ -140,7 +145,7 @@ namespace Objectivism
 
         public override void AppendAdditionalMenuItems(ToolStripDropDown menu)
         {
-            Menu_AppendItem(menu, "Update Object", UpdateObjectEventHandler);
+            Menu_AppendItem(menu, "Recompute", UpdateObjectEventHandler);
         }
 
         private void UpdateObjectEventHandler(object sender, EventArgs e)

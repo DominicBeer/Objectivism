@@ -11,7 +11,7 @@ using System.Windows.Forms;
 
 namespace Objectivism
 {
-    public class GetPropertiesComponent : GH_Component,IGH_VariableParameterComponent
+    public class GetPropertiesComponent : GH_Component,IGH_VariableParameterComponent,IHasMultipleTypes
     {
         /// <summary>
         /// Initializes a new instance of the GetPropertiesComponent class.
@@ -55,9 +55,9 @@ namespace Objectivism
 
         protected override void BeforeSolveInstance()
         {
+            UpdateTypeNames();
             if (!JustOneTypeName())
             {
-                this.AddRuntimeMessage(GH_RuntimeMessageLevel.Remark, "Multiple types detected");
                 this.NickName = "MultipleTypes.";
             }
             else
@@ -70,6 +70,25 @@ namespace Objectivism
         }
 
         private AccessChecker accessChecker;
+
+        private HashSet<string> typeNames = new HashSet<string>();
+        public HashSet<string> TypeNames => typeNames;
+
+        private void UpdateTypeNames()
+        {
+            typeNames.Clear();
+            var data = this.Params.Input[0].VolatileData.AllData(true);
+            foreach (var goo in data)
+            {
+                if (goo is GH_ObjectivismObject ghObj)
+                {
+                    var tn = ghObj.Value.TypeName;
+                    typeNames.Add(tn);
+                }
+            }
+        }
+
+        private bool JustOneTypeName() => typeNames.Count <= 1;
 
         private string GetTypeName()
         {
@@ -94,29 +113,7 @@ namespace Objectivism
             return "NoValidType";
         }
 
-        private bool JustOneTypeName()
-        {
-            var typeName = "";
-            bool firstIter = true;
-            var data = this.Params.Input[0].VolatileData.AllData(true);
-            foreach (var goo in data)
-            {
-                if (goo is GH_ObjectivismObject ghObj)
-                {
-                    var tn = ghObj.Value.TypeName;
-                    if (firstIter)
-                    {
-                        typeName = tn;
-                        firstIter = false;
-                    }
-                    else if (tn != typeName)
-                    {
-                        return false;
-                    }
-                }
-            }
-            return true;
-        }
+
 
 
         /// <summary>
@@ -279,7 +276,7 @@ namespace Objectivism
         public override void AppendAdditionalMenuItems(ToolStripDropDown menu)
         {
             Menu_AppendSeparator(menu);
-            Menu_AppendItem(menu, "Update", UpdateObjectEventHandler);
+            Menu_AppendItem(menu, "Recompute", UpdateObjectEventHandler);
             Menu_AppendItem(menu, "Full Explode", FullExplodeEventHandler);
             Menu_AppendItem(menu, "Graft all properties", DoNotGraftItemsEventHandler, true, GraftItems);
         }
