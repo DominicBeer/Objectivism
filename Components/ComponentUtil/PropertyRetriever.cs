@@ -1,6 +1,7 @@
 ﻿using Grasshopper.Kernel;
 using Grasshopper.Kernel.Data;
 using Grasshopper.Kernel.Types;
+using Objectivism.Parameters;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,7 +12,13 @@ namespace Objectivism
     {
         internal static (string Name, ObjectProperty Property) RetrieveProperties(IGH_DataAccess DA, int paramIndex, IGH_Component @this)
         {
+            bool previewOn = true;
             var param = @this.Params.Input[paramIndex];
+            if(param is IHasPreviewToggle hasPreviewToggle)
+            {
+                previewOn = hasPreviewToggle.PreviewOn;
+            }
+
             ObjectProperty prop;
             var name = param.NickName;
             if (param.Access == GH_ParamAccess.item)
@@ -34,6 +41,7 @@ namespace Objectivism
                 DA.GetDataTree(paramIndex, out GH_Structure<IGH_Goo> itemTree);
                 prop = new ObjectProperty(itemTree);
             }
+            prop.PreviewOn = previewOn;
             return (name, prop);
         }
     }

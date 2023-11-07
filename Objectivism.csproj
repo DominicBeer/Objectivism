@@ -86,6 +86,7 @@
     <Compile Include="ObjectivismInfo.cs" />
     <Compile Include="ObjectClasses\ObjectivismObject.cs" />
     <Compile Include="ObjectClasses\ObjectProperty.cs" />
+    <Compile Include="Parameters\IHasPreviewToggle.cs" />
     <Compile Include="Parameters\Param_ExtraObjectProperty.cs" />
     <Compile Include="Parameters\Param_ObjectivismOutput.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

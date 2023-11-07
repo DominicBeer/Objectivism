@@ -70,6 +70,31 @@ namespace Objectivism
             return propertyGetter.ContainsKey(name);
         }
 
+        internal bool HasProperty(string name, PropertyAccess access)
+        {
+            if(TryGetProperty(name, out var property))
+            {
+                return property.Access == access;
+            }
+            return false;
+        }
+
+        internal bool Implements(ObjectivismObject template)
+        {
+            return template.properties.All(prop => this.HasProperty(prop.Name, prop.Property.Access));
+        }
+
+        public bool TryGetProperty(string name, out ObjectProperty property)
+        {
+            property = null;
+            if (propertyGetter.ContainsKey(name))
+            {
+                property =  properties[propertyGetter[name]].Property;
+                return true;
+            }
+            return false;
+        }
+
         public ObjectProperty GetProperty(string name)
         {
             if (propertyGetter.ContainsKey(name))
@@ -81,6 +106,7 @@ namespace Objectivism
                 return null;
             }
         }
+
 
 
         internal (ObjectivismObject obj, AccessInfo conflicts) AddOrChangeProperties(List<(string name, ObjectProperty newProperty)> changes)

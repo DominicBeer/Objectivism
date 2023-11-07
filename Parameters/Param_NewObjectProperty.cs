@@ -4,21 +4,24 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using GH_IO.Serialization;
 using Grasshopper.Kernel;
 using Grasshopper.Kernel.Parameters;
 using Grasshopper.Kernel.Types;
 using Objectivism.Forms;
-
-
+using Objectivism.Parameters;
 
 namespace Objectivism
 {
-    public class Param_NewObjectProperty : Param_GenericObject
+    public class Param_NewObjectProperty : Param_GenericObject, IHasPreviewToggle
     {
         public override Guid ComponentGuid => new Guid("81320c17-4090-470d-b036-95005338c2b1");
         internal string nickNameCache = "";
         public override string TypeName => "Object Property Data";
         public override GH_Exposure Exposure => GH_Exposure.hidden;
+
+        public bool PreviewOn { get; private set; } = true;
+
         public Param_NewObjectProperty() : base()
         {
 
@@ -53,11 +56,17 @@ namespace Objectivism
         public override void AppendAdditionalMenuItems(ToolStripDropDown menu)
         {
             base.AppendAdditionalMenuItems(menu);
+
             Menu_AppendSeparator(menu);
 
             var recomputeButton = Menu_AppendItem(menu, "Recompute", RecomputeHandler);
 
             Menu_AppendSeparator(menu);
+
+            var toggleButton = Menu_AppendItem(menu, "Preview Geometry", PreviewToggleHandler, true, PreviewOn);
+
+            Menu_AppendSeparator(menu);
+
             bool isItem = Access == GH_ParamAccess.item;
             bool isList = Access == GH_ParamAccess.list;
             bool isTree = Access == GH_ParamAccess.tree;
@@ -67,8 +76,16 @@ namespace Objectivism
             var treeButton = Menu_AppendItem(menu, "Tree Access", TreeAccessEventHandler, true, isTree);
             
             Menu_AppendSeparator(menu);
+
             var changeButton = Menu_AppendItem(menu, "Change Property Name", LaunchChangeDialog, true);
 
+        }
+
+        private void PreviewToggleHandler(object sender, EventArgs e)
+        {
+            RecordUndoEvent("Change object preview type");
+            PreviewOn = !PreviewOn;
+            ExpireSolution(true);
         }
 
         private void RecomputeHandler(object sender, EventArgs e)
@@ -121,6 +138,24 @@ namespace Objectivism
             }
         }
 
+        public override bool Read(GH_IReader reader)
+        {
+            try
+            {
+                PreviewOn = reader.GetBoolean("PreviewState");
+            }
+            catch
+            {
+                PreviewOn = true;
+            }
+            return base.Read(reader);
+        }
+
+        public override bool Write(GH_IWriter writer)
+        {
+            writer.SetBoolean("PreviewState", PreviewOn);
+            return base.Write(writer);
+        }
 
     }
 

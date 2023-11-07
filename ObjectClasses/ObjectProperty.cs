@@ -16,14 +16,14 @@ namespace Objectivism
     enum PropertyAccess {Item, List, Tree}
     public class ObjectProperty : IGH_RenderAwareData, IGH_PreviewData
     {
-
+        public bool PreviewOn { get; internal set; } = true;
         public GH_Structure<IGH_Goo> Data { get; private set; }
         internal PropertyAccess Access { get; private set; } 
         public BoundingBox BoundingBox 
         { 
             get
             {
-                if (HasGeometry)
+                if (HasGeometry && PreviewOn)
                 {
                     var boxes = new List<BoundingBox>();
                     foreach (var goo in Data)
@@ -114,6 +114,7 @@ namespace Objectivism
         {
             writer.SetTree("PropertyDataTree", Data);
             writer.SetInt32("Access", (int)Access);
+            writer.SetBoolean("PreviewToggle", PreviewOn);
             return true;
         }
 
@@ -121,6 +122,14 @@ namespace Objectivism
         {
             Data = reader.GetTree("PropertyDataTree");
             Access = (PropertyAccess)reader.GetInt32("Access");
+            try
+            {
+                PreviewOn = reader.GetBoolean("PreviewToggle");
+            }
+            catch 
+            {
+                PreviewOn = true;
+            }
             return true;
         }
 
@@ -150,6 +159,7 @@ namespace Objectivism
 
         public void AppendRenderGeometry(GH_RenderArgs args, RenderMaterial material)
         {
+            if (!PreviewOn) return;
             foreach(var goo in Data)
             {
                 if(goo is IGH_RenderAwareData renderGoo)
@@ -161,6 +171,7 @@ namespace Objectivism
 
         public void DrawViewportWires(GH_PreviewWireArgs args)
         {
+            if (!PreviewOn) return;
             foreach (var goo in Data)
             {
                 if (goo is IGH_PreviewData previewGoo)
@@ -172,6 +183,7 @@ namespace Objectivism
 
         public void DrawViewportMeshes(GH_PreviewMeshArgs args)
         {
+            if (!PreviewOn) return;
             foreach (var goo in Data)
             {
                 if (goo is IGH_PreviewData previewGoo)
