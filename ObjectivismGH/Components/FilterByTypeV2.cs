@@ -9,7 +9,7 @@ using System.Windows.Forms;
 
 namespace Objectivism.Components
 {
-    public class FilterByTypeV2 : GH_Component, IGH_VariableParameterComponent
+    public class FilterByTypeV2 : GH_Component, IGH_VariableParameterComponent, IHasMultipleTypes
     {
         /// <summary>
         /// Initializes a new instance of the FilterByType class.
@@ -21,7 +21,7 @@ namespace Objectivism.Components
         {
         }
 
-        private HashSet<string> TypeNames = new HashSet<string>();
+        public HashSet<string> TypeNames { get; private set; } = new HashSet<string>();
         internal List<string> GetUnusedNames() => TypeNames.Except(Params.Output.Select(p => p.NickName)).ToList();
         internal string NextUnusedName()
         {
@@ -198,5 +198,6 @@ namespace Objectivism.Components
         {
             get { return new Guid("91ecf9aa-50ba-4bf4-bd3e-70066350458e"); }
         }
+
     }
 }

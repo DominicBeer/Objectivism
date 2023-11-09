@@ -246,7 +246,7 @@ namespace Objectivism
         {
             get
             {
-                return Resources.objchange;
+                return Resources.inherit;
             }
         }
 

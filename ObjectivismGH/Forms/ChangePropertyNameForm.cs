@@ -50,7 +50,7 @@ namespace Objectivism.Forms
                 .SelectMany(x => x);
             var changeParams =
                 _doc.Objects
-                .Where(obj => obj is AddOrChangePropertiesComponent c)
+                .Where(obj => obj is AddOrChangePropertiesComponent || obj is InheritComponent)
                 .Select(obj => (IGH_Component)obj)
                 .Select(c => c.Params.Input
                     .Where(p => p is Param_ExtraObjectProperty && p.NickName == _propName))
@@ -66,6 +66,8 @@ namespace Objectivism.Forms
             var count = allParams.Count();
             _paramsToChange = allParams.ToList();
             this.InstancesLabel.Text = $"{count} instances found";
+            this.Update();
+
         }
 
         private void GetParamsOfConnectedTypes()
@@ -90,7 +92,9 @@ namespace Objectivism.Forms
             var changeParams =
                 _doc.Objects
                 .Where(obj =>
-                    obj is AddOrChangePropertiesComponent c
+                    obj is AddOrChangePropertiesComponent || obj is InheritComponent)
+                .Where(obj =>
+                    obj is IHasMultipleTypes c
                     && c.TypeNames.Count != 0
                     && connectedTypes.Contains(c.TypeNames.First()))
                 .Select(obj => (IGH_Component)obj)
@@ -111,7 +115,7 @@ namespace Objectivism.Forms
             var count = allParams.Count();
             _paramsToChange = allParams.ToList();
             this.InstancesLabel.Text = $"{count} instances found";
-
+            this.Update();
         }
 
         private HashSet<string> FindAllConnectedTypes( HashSet<string> connectedTypes, Stack<IHasMultipleTypes> stack )
@@ -178,8 +182,10 @@ namespace Objectivism.Forms
                 .SelectMany(x => x);
             var changeParams =
                 _doc.Objects
+                .Where(obj =>
+                    obj is AddOrChangePropertiesComponent || obj is InheritComponent)
                 .Where(obj => 
-                    obj is AddOrChangePropertiesComponent c 
+                    obj is IHasMultipleTypes c 
                     && c.TypeNames.Count == 1 
                     && c.TypeNames.First() == _typeName)
                 .Select(obj => (IGH_Component)obj)
@@ -200,9 +206,11 @@ namespace Objectivism.Forms
             var count = allParams.Count();
             _paramsToChange = allParams.ToList();
             this.InstancesLabel.Text = $"{count} instances found";
+            this.Update();
+
         }
 
-        
+
 
         private void OkButton_Click(object sender, EventArgs e)
         {
@@ -221,6 +229,7 @@ namespace Objectivism.Forms
                 p.NickName= newName;
                 p.ExpireSolution(false);
             }
+            _paramsToChange.ForEach(p => p.Attributes.ExpireLayout());
             _paramsToChange.First().ExpireSolution(true); 
             _doc.UndoUtil.RecordEvent(undo);
             this.Close();
@@ -267,11 +276,13 @@ namespace Objectivism.Forms
         protected override void Internal_Redo(GH_Document doc)
         {
             param.NickName = newName;
+            param.Attributes.GetTopLevel.ExpireLayout();
         }
 
         protected override void Internal_Undo(GH_Document doc)
         {
             param.NickName= oldName;
+            param.Attributes.GetTopLevel.ExpireLayout();
         }
 
         public ChangeNameAction(IGH_Param param, string oldName, string newName)

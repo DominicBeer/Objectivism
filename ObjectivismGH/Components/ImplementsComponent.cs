@@ -7,7 +7,7 @@ using Rhino.Geometry;
 
 namespace Objectivism.Components
 {
-    public class ImplementsComponent : GH_Component
+    public class ImplementsComponent : GH_Component, IHasMultipleTypes
     {
         /// <summary>
         /// Initializes a new instance of the Implements class.
@@ -17,6 +17,12 @@ namespace Objectivism.Components
               "Tests if an object implements all the properties of a template object. An object implements the template if it has all the properties of the template, with name and access level matching",
               "Sets", "Objectivism")
         {
+            TypeNames = new HashSet<string>();
+        }
+
+        protected override void BeforeSolveInstance()
+        {
+            TypeNames.Clear();
         }
 
         /// <summary>
@@ -39,12 +45,16 @@ namespace Objectivism.Components
             if(!DA.TryGetObjectivsmObject(0, out var template)) return;
             if (!DA.TryGetObjectivsmObject(1, out var subject)) return;
 
+            TypeNames.Add(template.TypeName);
+            TypeNames.Add(subject.TypeName);
+
             DA.SetData(0, subject.Implements(template));    
         }
 
         protected override System.Drawing.Bitmap Icon => Resources.implements;
         
-        public override Guid ComponentGuid => new Guid("B77AF544-BB27-4BFB-8032-09993C3EEE4C"); 
-        
+        public override Guid ComponentGuid => new Guid("B77AF544-BB27-4BFB-8032-09993C3EEE4C");
+
+        public HashSet<string> TypeNames {get; private set;}
     }
 }
