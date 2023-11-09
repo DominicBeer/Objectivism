@@ -8,20 +8,27 @@ using System.Windows.Forms;
 using static Objectivism.Util;
 using static Objectivism.DataUtil;
 using Grasshopper.Kernel.Parameters;
+using static Grasshopper.GUI.GH_NickNameTextBox;
+
 namespace Objectivism
 {
-    public class AddOrChangePropertiesComponent : GH_Component,IGH_VariableParameterComponent, IHasMultipleTypes
+    public class InheritComponent : GH_Component, IGH_VariableParameterComponent, IHasMultipleTypes
     {
         /// <summary>
         /// Initializes a new instance of the ChangePropertiesComponent class.
         /// </summary>
-        public AddOrChangePropertiesComponent()
-          : base("Add Or Change Properties", "Add/Change",
-              "Change the value of a particular property, or add a new property",
+        public InheritComponent()
+          : base("Inherit", "NewTypeName",
+              "Create a new object from a template. Add or change properties as required",
               "Sets", "Objectivism")
         {
+            NickNameCache = this.NickName;
+            this.IconDisplayMode = GH_IconDisplayMode.name;
+            this.ObjectChanged += NickNameChangedEventHandler;
+            this.Message = "Inherit";
         }
 
+        private string NickNameCache;
 
         private HashSet<string> PropertyNames = new HashSet<string>();
         internal List<string> GetUnusedNames() => PropertyNames.Except(Params.Input.Select(p => p.NickName).Skip(1)).ToList();
@@ -37,7 +44,7 @@ namespace Objectivism
         {
             PropertyNames.Clear();
             var data = this.Params.Input[0].VolatileData.AllData(true).ToList();
-            foreach( var goo in data)
+            foreach (var goo in data)
             {
                 if (goo is GH_ObjectivismObject ghObj)
                 {
@@ -90,7 +97,7 @@ namespace Objectivism
         protected override void BeforeSolveInstance()
         {
             UpdateTypeNames();
-            if(!JustOneTypeName())
+            if (!JustOneTypeName())
             {
                 this.AddRuntimeMessage(GH_RuntimeMessageLevel.Remark, "Mutliple types detected");
             }
@@ -126,21 +133,36 @@ namespace Objectivism
             }
         }
 
+        public void NickNameChangedEventHandler(object sender, GH_ObjectChangedEventArgs args)
+        {
+            if (args.Type == GH_ObjectEventType.NickName)
+            {
+                if (NickName != NickNameCache)
+                {
+                    this.AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "Type name (component nickname) changed but object not updated, right click on component and press \"Recompute\"");
+                }
+            }
+        }
+
         /// <summary>
         /// This is the method that actually does the work.
         /// </summary>
         /// <param name="DA">The DA object is used to retrieve from inputs and store in outputs.</param>
         protected override void SolveInstance(IGH_DataAccess DA)
         {
+            var typeName = this.NickName;
+            NickNameCache = NickName;
+
             if (!DA.TryGetObjectivsmObject(0, out var obj)) return;
 
             var updates = new List<(string Name, ObjectProperty Property)>();
 
-            for(int i = 1; i < Params.Input.Count; i++)
+            for (int i = 1; i < Params.Input.Count; i++)
             {
                 updates.Add(RetrieveProperties(DA, i, this));
             }
-            (var newObj, var accessConflict) = obj.AddOrChangeProperties(updates);
+
+            (var newObj, var accessConflict) = obj.AddOrChangeProperties(updates, typeName);
             accessConflict.BroadcastConflicts(this);
             DA.SetData(0, new GH_ObjectivismObject(newObj));
 
@@ -189,7 +211,7 @@ namespace Objectivism
                 {
                     param.NickName = NextUnusedName();
                 }
-                
+
             }
         }
 
@@ -233,7 +255,7 @@ namespace Objectivism
         /// </summary>
         public override Guid ComponentGuid
         {
-            get { return new Guid("e9a4a775-aaa2-489f-9d8e-6f8f7c1bc36b"); }
+            get { return new Guid("6F1CED3F-D460-4339-A494-D1829342E2C3"); }
         }
     }
 }

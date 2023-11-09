@@ -4,19 +4,24 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using GH_IO.Serialization;
 using Grasshopper.Kernel;
 using Grasshopper.Kernel.Parameters;
 using Grasshopper.Kernel.Types;
 using Objectivism.Forms;
+using Objectivism.Parameters;
 
 namespace Objectivism
 {
-    public class Param_ExtraObjectProperty : Param_GenericObject //Item access, property retrieval
+    public class Param_ExtraObjectProperty : Param_GenericObject, IHasPreviewToggle //Item access, property retrieval
     {
         public override Guid ComponentGuid => new Guid("41412f8c-c2d9-45c7-83d0-bd04a10e14fa");
         internal string nickNameCache = "";
         public override GH_Exposure Exposure => GH_Exposure.hidden;
         public override string TypeName => "Object Property Data";
+
+        public bool PreviewOn { get; private set; } = true;
+
         internal HashSet<string> AllPropertyNames = new HashSet<string>();
         internal void CommitNickName() { this.nickNameCache = NickName; }
         public Param_ExtraObjectProperty() : base()
@@ -51,6 +56,10 @@ namespace Objectivism
 
             Menu_AppendSeparator(menu);
 
+            var toggleButton = Menu_AppendItem(menu, "Preview Geometry", PreviewToggleHandler, true, PreviewOn);
+
+            Menu_AppendSeparator(menu);
+
             bool isItem = Access == GH_ParamAccess.item;
             bool isList = Access == GH_ParamAccess.list;
             bool isTree = Access == GH_ParamAccess.tree;
@@ -68,6 +77,13 @@ namespace Objectivism
             Menu_AppendSeparator(menu);
             var changeButton = Menu_AppendItem(menu, "Change Property Name", LaunchChangeDialog, true);
 
+        }
+
+        private void PreviewToggleHandler(object sender, EventArgs e)
+        {
+            RecordUndoEvent("Change object preview type");
+            PreviewOn = !PreviewOn;
+            ExpireSolution(true);
         }
 
         private void RecomputeHandler(object sender, EventArgs e)
@@ -133,6 +149,25 @@ namespace Objectivism
                 this.NickName = button.Text;
                 this.ExpireSolution(true);
             }
+        }
+
+        public override bool Read(GH_IReader reader)
+        {
+            try
+            {
+                PreviewOn = reader.GetBoolean("PreviewState");
+            }
+            catch
+            {
+                PreviewOn = true;
+            }
+            return base.Read(reader);
+        }
+
+        public override bool Write(GH_IWriter writer)
+        {
+            writer.SetBoolean("PreviewState", PreviewOn);
+            return base.Write(writer);
         }
     }
 }
