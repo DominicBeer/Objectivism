@@ -8,13 +8,13 @@ using System.Linq;
 
 namespace Objectivism
 {
-    static class PropertyRetriever
+    static class DataUtil
     {
         internal static (string Name, ObjectProperty Property) RetrieveProperties(IGH_DataAccess DA, int paramIndex, IGH_Component @this)
         {
             bool previewOn = true;
             var param = @this.Params.Input[paramIndex];
-            if(param is IHasPreviewToggle hasPreviewToggle)
+            if (param is IHasPreviewToggle hasPreviewToggle)
             {
                 previewOn = hasPreviewToggle.PreviewOn;
             }
@@ -43,6 +43,19 @@ namespace Objectivism
             }
             prop.PreviewOn = previewOn;
             return (name, prop);
+        }
+
+        internal static bool TryGetObjectivsmObject(this IGH_DataAccess DA, int paramIndex, out ObjectivismObject obj)
+        {
+            obj = null;
+            IGH_Goo goo = null;
+            if(!DA.GetData(paramIndex, ref goo)) { return false; }
+            if(goo is GH_ObjectivismObject ghObj)
+            {
+                obj = ghObj.Value;
+                return true;
+            }
+            return false;
         }
     }
 }

@@ -7,7 +7,7 @@ using Grasshopper.Kernel.Types;
 using Grasshopper.Kernel.Data;
 using System.Windows.Forms;
 using static Objectivism.Util;
-using static Objectivism.PropertyRetriever;
+using static Objectivism.DataUtil;
 
 
 namespace Objectivism
@@ -138,7 +138,7 @@ namespace Objectivism
             {
                 if (NickName != NickNameCache)
                 {
-                    this.AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "Type name (component nickname) changed but object not updated, right click on component and press \"Update Object\"");
+                    this.AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "Type name (component nickname) changed but object not updated, right click on component and press \"Recompute\"");
                 }
             }
         }

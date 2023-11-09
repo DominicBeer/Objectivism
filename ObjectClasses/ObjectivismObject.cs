@@ -108,10 +108,13 @@ namespace Objectivism
         }
 
 
+        internal (ObjectivismObject obj, AccessInfo conflicts) AddOrChangeProperties(List<(string name, ObjectProperty newProperty)> changes) =>
+            AddOrChangeProperties(changes, this.TypeName);
 
-        internal (ObjectivismObject obj, AccessInfo conflicts) AddOrChangeProperties(List<(string name, ObjectProperty newProperty)> changes)
+        internal (ObjectivismObject obj, AccessInfo conflicts) AddOrChangeProperties(List<(string name, ObjectProperty newProperty)> changes, string newName)
         {
             var newObj = new ObjectivismObject(this);
+            newObj.TypeName = newName;
             var numberOfExistingProps = newObj.properties.Count;
             AccessInfo accessInfo = new AccessInfo();
             foreach ((string name, var newProp) in changes)
