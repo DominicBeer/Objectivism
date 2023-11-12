@@ -1,14 +1,10 @@
 ﻿using Grasshopper.Kernel;
-using Grasshopper.Kernel.Types;
-using Rhino.Geometry;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
-using static Objectivism.Util;
 using static Objectivism.DataUtil;
 using Grasshopper.Kernel.Parameters;
-using static Grasshopper.GUI.GH_NickNameTextBox;
 
 namespace Objectivism
 {
@@ -97,10 +93,6 @@ namespace Objectivism
         protected override void BeforeSolveInstance()
         {
             UpdateTypeNames();
-            if (!JustOneTypeName())
-            {
-                this.AddRuntimeMessage(GH_RuntimeMessageLevel.Remark, "Mutliple types detected");
-            }
             this.UpdatePropertyNames();
             Params.Input.ForEach(CommitParamNames);
             base.BeforeSolveInstance();
@@ -112,6 +104,7 @@ namespace Objectivism
         private void UpdateTypeNames()
         {
             typeNames.Clear();
+            typeNames.Add(this.NickName);
             var data = this.Params.Input[0].VolatileData.AllData(true);
             foreach (var goo in data)
             {

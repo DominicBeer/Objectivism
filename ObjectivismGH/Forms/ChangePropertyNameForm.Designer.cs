@@ -29,7 +29,7 @@
         private void InitializeComponent()
         {
             this.OkButton = new System.Windows.Forms.Button();
-            this.CancelButton = new System.Windows.Forms.Button();
+            this.FormCancelButton = new System.Windows.Forms.Button();
             this.WelcomeTextLabel = new System.Windows.Forms.Label();
             this.InstancesLabel = new System.Windows.Forms.Label();
             this.NewNameLabel = new System.Windows.Forms.Label();
@@ -51,16 +51,16 @@
             this.OkButton.UseVisualStyleBackColor = true;
             this.OkButton.Click += new System.EventHandler(this.OkButton_Click);
             // 
-            // CancelButton
+            // FormCancelButton
             // 
-            this.CancelButton.Location = new System.Drawing.Point(369, 317);
-            this.CancelButton.Margin = new System.Windows.Forms.Padding(4);
-            this.CancelButton.Name = "CancelButton";
-            this.CancelButton.Size = new System.Drawing.Size(213, 42);
-            this.CancelButton.TabIndex = 1;
-            this.CancelButton.Text = "Cancel";
-            this.CancelButton.UseVisualStyleBackColor = true;
-            this.CancelButton.Click += new System.EventHandler(this.CancelButton_Click);
+            this.FormCancelButton.Location = new System.Drawing.Point(369, 317);
+            this.FormCancelButton.Margin = new System.Windows.Forms.Padding(4);
+            this.FormCancelButton.Name = "FormCancelButton";
+            this.FormCancelButton.Size = new System.Drawing.Size(213, 42);
+            this.FormCancelButton.TabIndex = 1;
+            this.FormCancelButton.Text = "Cancel";
+            this.FormCancelButton.UseVisualStyleBackColor = true;
+            this.FormCancelButton.Click += new System.EventHandler(this.CancelButton_Click);
             // 
             // WelcomeTextLabel
             // 
@@ -165,7 +165,7 @@
             this.Controls.Add(this.NewNameLabel);
             this.Controls.Add(this.InstancesLabel);
             this.Controls.Add(this.WelcomeTextLabel);
-            this.Controls.Add(this.CancelButton);
+            this.Controls.Add(this.FormCancelButton);
             this.Controls.Add(this.OkButton);
             this.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
@@ -182,7 +182,7 @@
         #endregion
 
         private System.Windows.Forms.Button OkButton;
-        private System.Windows.Forms.Button CancelButton;
+        private System.Windows.Forms.Button FormCancelButton;
         private System.Windows.Forms.Label WelcomeTextLabel;
         private System.Windows.Forms.Label InstancesLabel;
         private System.Windows.Forms.Label NewNameLabel;

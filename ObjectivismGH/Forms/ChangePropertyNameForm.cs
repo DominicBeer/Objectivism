@@ -14,7 +14,6 @@ namespace Objectivism.Forms
         private readonly string _propName;
         private readonly string _typeName;
         private int radioState = 0;
-        private bool _multiOnly = false;
         private void setRadio(int i)
         {
             if(i != radioState)
@@ -221,7 +220,7 @@ namespace Objectivism.Forms
                 return;
             }
             var undo = new GH_UndoRecord("Rename property for doc");
-            
+           
             foreach(var p in _paramsToChange)
             {
                 var action = new ChangeNameAction(p, p.NickName, newName);
@@ -277,12 +276,14 @@ namespace Objectivism.Forms
         {
             param.NickName = newName;
             param.Attributes.GetTopLevel.ExpireLayout();
+            param.ExpireSolution(false);
         }
 
         protected override void Internal_Undo(GH_Document doc)
         {
             param.NickName= oldName;
             param.Attributes.GetTopLevel.ExpireLayout();
+            param.ExpireSolution(false);
         }
 
         public ChangeNameAction(IGH_Param param, string oldName, string newName)
@@ -292,4 +293,6 @@ namespace Objectivism.Forms
             this.newName = newName;
         }
     }
+
+    
 }
