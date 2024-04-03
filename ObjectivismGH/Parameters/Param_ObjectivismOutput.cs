@@ -1,16 +1,13 @@
-﻿using System;
+﻿using Grasshopper.Kernel;
+using Grasshopper.Kernel.Parameters;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using Grasshopper.Kernel;
-using Grasshopper.Kernel.Parameters;
-using Grasshopper.Kernel.Types;
 
 namespace Objectivism
 {
-    public class Param_ObjectivismOutput: Param_GenericObject
+    public class Param_ObjectivismOutput : Param_GenericObject
     {
         public override Guid ComponentGuid => new Guid("1b625488-3ec8-4189-8d14-6de1b0c9effd");
         protected virtual string outputType => "Property";
@@ -49,14 +46,14 @@ namespace Objectivism
         public override void AppendAdditionalMenuItems(ToolStripDropDown menu)
         {
             base.AppendAdditionalMenuItems(menu);
-            
+
             Menu_AppendSeparator(menu);
             var recomputeButton = Menu_AppendItem(menu, "Recompute", RecomputeHandler);
             Menu_AppendSeparator(menu);
             var button = Menu_AppendItem(menu, outputTypePlural);
             var dropDownButtons = this.AllPropertyNames.Select(n => new ToolStripMenuItem(n, null, PropertyClickEventHandler)).ToArray();
             button.DropDownItems.AddRange(dropDownButtons);
-            
+
         }
 
         private void RecomputeHandler(object sender, EventArgs e)
@@ -66,14 +63,14 @@ namespace Objectivism
             {
                 parent.Params.Input.ForEach(p => p.ExpireSolution(false));
                 parent.ExpireSolution(true);
-                
+
             }
         }
 
         private void PropertyClickEventHandler(object sender, EventArgs e)
         {
             RecordUndoEvent($"Change {outputTyputLC} name");
-            if(sender is ToolStripMenuItem button)
+            if (sender is ToolStripMenuItem button)
             {
                 this.NickName = button.Text;
                 var parent = this.Attributes.GetTopLevel.DocObject;
@@ -82,7 +79,7 @@ namespace Objectivism
         }
     }
 
-    public class Param_ObjectivismObjectTypeOutput: Param_ObjectivismOutput
+    public class Param_ObjectivismObjectTypeOutput : Param_ObjectivismOutput
     {
         protected override string outputType => "Type";
         protected override string outputTypePlural => "Types";

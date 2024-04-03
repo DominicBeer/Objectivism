@@ -1,19 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Grasshopper.Kernel.Types;
-using Grasshopper.Kernel.Data;
-using Grasshopper.Kernel;
-using GH_IO;
+﻿using GH_IO;
 using GH_IO.Serialization;
+using Grasshopper.Kernel;
+using Grasshopper.Kernel.Types;
 using Rhino.Geometry;
 using Rhino.Render;
-using System.Windows.Forms;
+using System;
 namespace Objectivism
 {
-    public class GH_ObjectivismObject : GH_GeometricGoo<ObjectivismObject>,IGH_PreviewData,IGH_RenderAwareData,GH_ISerializable
+    public class GH_ObjectivismObject : GH_GeometricGoo<ObjectivismObject>, IGH_PreviewData, IGH_RenderAwareData, GH_ISerializable
     {
         public override bool IsValid => true;
 
@@ -68,9 +62,9 @@ namespace Objectivism
                 Value.GH_Write(writer);
                 return true;
             }
-            catch(Exception e)
+            catch (Exception e)
             {
-                writer.SetString("Oh Dear","An Exception Occured");
+                writer.SetString("Oh Dear", "An Exception Occured");
                 writer.SetString("Exception Message", e.Message);
                 writer.SetString("Stack Trace", e.StackTrace);
                 writer.SetString("Exception Type", e.GetType().FullName);

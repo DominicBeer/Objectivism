@@ -1,10 +1,9 @@
 ﻿using Grasshopper.Kernel;
-using Rhino.Geometry;
+using Grasshopper.Kernel.Parameters;
+using Grasshopper.Kernel.Types;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Grasshopper.Kernel.Parameters;
-using Grasshopper.Kernel.Types;
 using System.Windows.Forms;
 
 namespace Objectivism.Components
@@ -19,7 +18,7 @@ namespace Objectivism.Components
               "Filter objects by their type name",
               "Sets", "Objectivism")
         {
-            
+
         }
         public override bool Obsolete => true;
         public override GH_Exposure Exposure => GH_Exposure.hidden;
@@ -48,7 +47,7 @@ namespace Objectivism.Components
         /// </summary>
         protected override void RegisterOutputParams(GH_Component.GH_OutputParamManager pManager)
         {
-            
+
         }
 
 
@@ -94,7 +93,7 @@ namespace Objectivism.Components
             foreach ((int i, var param) in Params.Output.Enumerate())
             {
                 string name = param.NickName;
-                if(obj.Value.TypeName == name)
+                if (obj.Value.TypeName == name)
                 {
                     DA.SetData(i, obj);
                 }
@@ -150,7 +149,7 @@ namespace Objectivism.Components
                 {
                     outputParam.AllPropertyNames = this.TypeNames;
                 }
-            } 
+            }
         }
 
         public override void AppendAdditionalMenuItems(ToolStripDropDown menu)

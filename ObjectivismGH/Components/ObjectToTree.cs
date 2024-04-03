@@ -1,7 +1,6 @@
 ﻿using Grasshopper.Kernel;
 using Grasshopper.Kernel.Data;
 using Grasshopper.Kernel.Types;
-using Rhino.Geometry;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -51,7 +50,7 @@ namespace Objectivism.Components
 
         private void AddToStoreIfRequired(string name)
         {
-            if(!propNamesSet.Contains(name))
+            if (!propNamesSet.Contains(name))
             {
                 propNamesStore.Add(name);
                 propNamesSet.Add(name);

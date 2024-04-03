@@ -2,9 +2,7 @@
 using Grasshopper.Kernel.Data;
 using Grasshopper.Kernel.Types;
 using Objectivism.Parameters;
-using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace Objectivism
 {
@@ -49,8 +47,8 @@ namespace Objectivism
         {
             obj = null;
             IGH_Goo goo = null;
-            if(!DA.GetData(paramIndex, ref goo)) { return false; }
-            if(goo is GH_ObjectivismObject ghObj)
+            if (!DA.GetData(paramIndex, ref goo)) { return false; }
+            if (goo is GH_ObjectivismObject ghObj)
             {
                 obj = ghObj.Value;
                 return true;

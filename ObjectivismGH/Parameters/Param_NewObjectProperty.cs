@@ -1,15 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using GH_IO.Serialization;
+﻿using GH_IO.Serialization;
 using Grasshopper.Kernel;
 using Grasshopper.Kernel.Parameters;
-using Grasshopper.Kernel.Types;
 using Objectivism.Forms;
 using Objectivism.Parameters;
+using System;
+using System.Windows.Forms;
 
 namespace Objectivism
 {
@@ -32,7 +27,7 @@ namespace Objectivism
             ObjectChanged += NickNameChangedEventHandler;
         }
 
-        
+
 
         internal void CommitNickName()
         {
@@ -40,9 +35,9 @@ namespace Objectivism
         }
         public void NickNameChangedEventHandler(object sender, GH_ObjectChangedEventArgs args)
         {
-            if(args.Type == GH_ObjectEventType.NickName)
+            if (args.Type == GH_ObjectEventType.NickName)
             {
-                if(NickName != nickNameCache)
+                if (NickName != nickNameCache)
                 {
                     this.AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, "Property input name changed but object not updated, right click on component and press \"Recompute\"");
                 }
@@ -71,10 +66,10 @@ namespace Objectivism
             bool isList = Access == GH_ParamAccess.list;
             bool isTree = Access == GH_ParamAccess.tree;
 
-            var itemButton = Menu_AppendItem(menu, "Item Access", ItemAccessEventHandler, true , isItem);
+            var itemButton = Menu_AppendItem(menu, "Item Access", ItemAccessEventHandler, true, isItem);
             var listButton = Menu_AppendItem(menu, "List Access", ListAccessEventHandler, true, isList);
             var treeButton = Menu_AppendItem(menu, "Tree Access", TreeAccessEventHandler, true, isTree);
-            
+
             Menu_AppendSeparator(menu);
 
             var changeButton = Menu_AppendItem(menu, "Change Property Name", LaunchChangeDialog, true);

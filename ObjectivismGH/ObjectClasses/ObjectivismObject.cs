@@ -1,16 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Grasshopper.Kernel.Types;
-using Grasshopper.Kernel.Data;
+﻿using GH_IO.Serialization;
 using Grasshopper.Kernel;
-using GH_IO;
-using GH_IO.Serialization;
+using Grasshopper.Kernel.Types;
 using Rhino.Geometry;
 using Rhino.Render;
+using System.Collections.Generic;
 using System.Dynamic;
+using System.Linq;
 
 namespace Objectivism
 {
@@ -72,7 +67,7 @@ namespace Objectivism
 
         internal bool HasProperty(string name, PropertyAccess access)
         {
-            if(TryGetProperty(name, out var property))
+            if (TryGetProperty(name, out var property))
             {
                 return property.Access == access;
             }
@@ -89,7 +84,7 @@ namespace Objectivism
             property = null;
             if (propertyGetter.ContainsKey(name))
             {
-                property =  properties[propertyGetter[name]].Property;
+                property = properties[propertyGetter[name]].Property;
                 return true;
             }
             return false;
@@ -119,12 +114,12 @@ namespace Objectivism
             AccessInfo accessInfo = new AccessInfo();
             foreach ((string name, var newProp) in changes)
             {
-               
+
                 if (newObj.propertyGetter.ContainsKey(name))
-                { 
+                {
                     var currentAccess = newObj.GetProperty(name).Access;
                     var newAccess = newProp.Access;
-                    if(newAccess != currentAccess)
+                    if (newAccess != currentAccess)
 
                     {
                         accessInfo.AddConflict(name);
@@ -133,7 +128,7 @@ namespace Objectivism
                 }
                 else
                 {
-                    newObj.properties.Add((name,newProp));
+                    newObj.properties.Add((name, newProp));
                     newObj.propertyGetter.Add(name, numberOfExistingProps);
                     numberOfExistingProps++;
                 }
@@ -172,11 +167,11 @@ namespace Objectivism
         public bool GH_Write(GH_IWriter writer)
         {
             writer.SetString("ObjectTypeName", TypeName);
-            
+
             writer.SetInt32("NumberOfProperties", properties.Count);
             var nameWriter = writer.CreateChunk("Names");
             int i = 0;
-            foreach(var pair in properties)
+            foreach (var pair in properties)
             {
                 nameWriter.SetString("Name", i, pair.Name);
                 var propWriter = nameWriter.CreateChunk("Prop", i);
@@ -224,18 +219,18 @@ namespace Objectivism
 
         public void AppendRenderGeometry(GH_RenderArgs args, RenderMaterial material)
         {
-            properties.ForEach(prop => prop.Property.AppendRenderGeometry(args,material));
+            properties.ForEach(prop => prop.Property.AppendRenderGeometry(args, material));
         }
 
         internal dynamic ToDynamic()
         {
             var eo = new ExpandoObject();
             var eoColl = (ICollection<KeyValuePair<string, object>>)eo;
-            foreach(var pair in properties)
+            foreach (var pair in properties)
             {
                 var name = pair.Name.SpacesToUnderscores();
                 var prop = pair.Property;
-                if(prop.Access == PropertyAccess.Item)
+                if (prop.Access == PropertyAccess.Item)
                 {
                     var item = prop != null
                         ? ProcessGoo(prop.Data.get_FirstItem(false))
@@ -262,8 +257,8 @@ namespace Objectivism
 
         }
 
-        
-        
+
+
         private static object ProcessGoo(IGH_Goo goo)
         {
             return goo != null ? goo.ScriptVariable() : null;

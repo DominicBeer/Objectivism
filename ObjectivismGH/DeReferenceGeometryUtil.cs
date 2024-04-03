@@ -1,6 +1,6 @@
-﻿using System;
-using Grasshopper.Kernel.Types;
+﻿using Grasshopper.Kernel.Types;
 using Rhino.Geometry;
+using System;
 using System.Reflection;
 namespace Objectivism
 {
@@ -49,7 +49,7 @@ namespace Objectivism
                     }
                     //Plugins that implement IGH_GeometricGoo may not have a constructor like above
                     //In this case revert to DuplicateGeometry and hope it is implemented properly. 
-                    catch { newGoo = geom.DuplicateGeometry(); } 
+                    catch { newGoo = geom.DuplicateGeometry(); }
                     geom = newGoo;
                 }
 

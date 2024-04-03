@@ -4,23 +4,22 @@ using Grasshopper.Kernel.Data;
 using Grasshopper.Kernel.Types;
 using Rhino.Geometry;
 using Rhino.Render;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using static Objectivism.Util;
 using static Objectivism.DeReferenceGeometryUtil;
+using static Objectivism.Util;
 
 
 namespace Objectivism
 {
-    enum PropertyAccess {Item, List, Tree}
+    enum PropertyAccess { Item, List, Tree }
     public class ObjectProperty : IGH_RenderAwareData, IGH_PreviewData
     {
         public bool PreviewOn { get; internal set; } = true;
         public GH_Structure<IGH_Goo> Data { get; private set; }
-        internal PropertyAccess Access { get; private set; } 
-        public BoundingBox BoundingBox 
-        { 
+        internal PropertyAccess Access { get; private set; }
+        public BoundingBox BoundingBox
+        {
             get
             {
                 if (HasGeometry && PreviewOn)
@@ -43,8 +42,8 @@ namespace Objectivism
         }
         public bool HasGeometry => Data.Any(goo => goo is IGH_GeometricGoo);
         public BoundingBox ClippingBox => BoundingBox;
-        
-        public ObjectProperty() 
+
+        public ObjectProperty()
         {
             Data = new GH_Structure<IGH_Goo>();
             Access = PropertyAccess.Item;
@@ -88,14 +87,14 @@ namespace Objectivism
 
         private IGH_Goo DeReferenceIfRequired(IGH_Goo goo)
         {
-            if(goo is IGH_GeometricGoo geom)
+            if (goo is IGH_GeometricGoo geom)
             {
                 return DeReferenceWhereRequired(geom);
             }
             return goo;
         }
 
-        
+
 
         private IGH_Goo DuplicateUtil(IGH_Goo goo)
         {
@@ -126,7 +125,7 @@ namespace Objectivism
             {
                 PreviewOn = reader.GetBoolean("PreviewToggle");
             }
-            catch 
+            catch
             {
                 PreviewOn = true;
             }
@@ -135,7 +134,7 @@ namespace Objectivism
 
         public ObjectProperty Transform(Transform xform)
         {
-            var newData = Data.MapTree(TransformUtil,xform);
+            var newData = Data.MapTree(TransformUtil, xform);
             return new ObjectProperty(newData, this.Access);
         }
         public ObjectProperty Morph(SpaceMorph morph)
@@ -160,9 +159,9 @@ namespace Objectivism
         public void AppendRenderGeometry(GH_RenderArgs args, RenderMaterial material)
         {
             if (!PreviewOn) return;
-            foreach(var goo in Data)
+            foreach (var goo in Data)
             {
-                if(goo is IGH_RenderAwareData renderGoo)
+                if (goo is IGH_RenderAwareData renderGoo)
                 {
                     renderGoo.AppendRenderGeometry(args, material);
                 }

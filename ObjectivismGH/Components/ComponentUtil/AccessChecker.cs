@@ -1,7 +1,5 @@
-﻿using System;
+﻿using Grasshopper.Kernel;
 using System.Collections.Generic;
-using System.Linq;
-using Grasshopper.Kernel;
 namespace Objectivism
 {
     class AccessChecker
@@ -35,7 +33,7 @@ namespace Objectivism
 
         public void ThrowWarnings()
         {
-            foreach(var name in warningsToThrow)
+            foreach (var name in warningsToThrow)
             {
                 hostRef.AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, $"Access not consistent for {name} property. Output data tree may be messy and not consistent");
             }
@@ -43,7 +41,7 @@ namespace Objectivism
 
         public PropertyAccess BestGuessAccess(string name)
         {
-            if(accessRecorder.ContainsKey(name))
+            if (accessRecorder.ContainsKey(name))
             {
                 return accessRecorder[name];
             }

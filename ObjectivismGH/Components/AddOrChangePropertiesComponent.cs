@@ -1,16 +1,13 @@
 ﻿using Grasshopper.Kernel;
-using Grasshopper.Kernel.Types;
-using Rhino.Geometry;
+using Grasshopper.Kernel.Parameters;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
-using static Objectivism.Util;
 using static Objectivism.DataUtil;
-using Grasshopper.Kernel.Parameters;
 namespace Objectivism
 {
-    public class AddOrChangePropertiesComponent : GH_Component,IGH_VariableParameterComponent, IHasMultipleTypes
+    public class AddOrChangePropertiesComponent : GH_Component, IGH_VariableParameterComponent, IHasMultipleTypes
     {
         /// <summary>
         /// Initializes a new instance of the ChangePropertiesComponent class.
@@ -37,7 +34,7 @@ namespace Objectivism
         {
             PropertyNames.Clear();
             var data = this.Params.Input[0].VolatileData.AllData(true).ToList();
-            foreach( var goo in data)
+            foreach (var goo in data)
             {
                 if (goo is GH_ObjectivismObject ghObj)
                 {
@@ -90,7 +87,7 @@ namespace Objectivism
         protected override void BeforeSolveInstance()
         {
             UpdateTypeNames();
-            if(!JustOneTypeName())
+            if (!JustOneTypeName())
             {
                 this.AddRuntimeMessage(GH_RuntimeMessageLevel.Remark, "Mutliple types detected");
             }
@@ -136,7 +133,7 @@ namespace Objectivism
 
             var updates = new List<(string Name, ObjectProperty Property)>();
 
-            for(int i = 1; i < Params.Input.Count; i++)
+            for (int i = 1; i < Params.Input.Count; i++)
             {
                 updates.Add(RetrieveProperties(DA, i, this));
             }
@@ -189,7 +186,7 @@ namespace Objectivism
                 {
                     param.NickName = NextUnusedName();
                 }
-                
+
             }
         }
 

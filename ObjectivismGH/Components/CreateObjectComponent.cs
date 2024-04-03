@@ -1,12 +1,8 @@
 ﻿using Grasshopper.Kernel;
-using Rhino.Geometry;
 using System;
-using System.Linq;
 using System.Collections.Generic;
-using Grasshopper.Kernel.Types;
-using Grasshopper.Kernel.Data;
+using System.Linq;
 using System.Windows.Forms;
-using static Objectivism.Util;
 using static Objectivism.DataUtil;
 
 
@@ -17,7 +13,7 @@ namespace Objectivism
     {
         HashSet<string> TypeNames { get; }
     }
-    public class CreateObjectComponent : GH_Component,IGH_VariableParameterComponent
+    public class CreateObjectComponent : GH_Component, IGH_VariableParameterComponent
     {
 
         public CreateObjectComponent()
@@ -70,7 +66,7 @@ namespace Objectivism
             var typeName = this.NickName;
             NickNameCache = NickName;
             var data = new List<(string Name, ObjectProperty Property)>();
-            for(int i = 0; i < Params.Input.Count; i++)
+            for (int i = 0; i < Params.Input.Count; i++)
             {
                 data.Add(RetrieveProperties(DA, i, this));
             }
@@ -79,7 +75,7 @@ namespace Objectivism
             DA.SetData(0, ghObj);
         }
 
-        
+
 
         public bool CanInsertParameter(GH_ParameterSide side, int index)
         {
@@ -107,7 +103,7 @@ namespace Objectivism
         public void VariableParameterMaintenance()
         {
             var dynamicParams = Params.Input.ToList();
-            foreach(var param in dynamicParams)
+            foreach (var param in dynamicParams)
             {
                 param.Optional = true;
             }

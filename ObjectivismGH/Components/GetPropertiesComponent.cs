@@ -3,7 +3,6 @@ using Grasshopper.Kernel;
 using Grasshopper.Kernel.Data;
 using Grasshopper.Kernel.Parameters;
 using Grasshopper.Kernel.Types;
-using Rhino.Geometry;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,7 +10,7 @@ using System.Windows.Forms;
 
 namespace Objectivism
 {
-    public class GetPropertiesComponent : GH_Component,IGH_VariableParameterComponent,IHasMultipleTypes
+    public class GetPropertiesComponent : GH_Component, IGH_VariableParameterComponent, IHasMultipleTypes
     {
         /// <summary>
         /// Initializes a new instance of the GetPropertiesComponent class.
@@ -122,14 +121,14 @@ namespace Objectivism
         /// <param name="DA">The DA object is used to retrieve from inputs and store in outputs.</param>
         protected override void SolveInstance(IGH_DataAccess DA)
         {
-            
+
             IGH_Goo goo = null;
-            if(!DA.GetData(0,ref goo))
+            if (!DA.GetData(0, ref goo))
             {
                 return;
             }
             ObjectivismObject obj;
-            if(goo is GH_ObjectivismObject ghObj)
+            if (goo is GH_ObjectivismObject ghObj)
             {
                 obj = ghObj.Value;
             }
@@ -140,18 +139,18 @@ namespace Objectivism
             }
             PropertyNames.UnionWith(obj.AllProperties);
 
-            
 
-            foreach((int i, var param) in Params.Output.Enumerate())
+
+            foreach ((int i, var param) in Params.Output.Enumerate())
             {
-                
+
                 string name = param.NickName;
 
-                
+
 
                 var prop = obj.GetProperty(name);
                 PropertyAccess access;
-                if(prop != null)
+                if (prop != null)
                 {
                     access = prop.Access;
                     accessChecker.AccessCheck(prop, name);
@@ -160,7 +159,7 @@ namespace Objectivism
                 {
                     access = accessChecker.BestGuessAccess(name);
                 }
-                
+
 
 
                 if (access == PropertyAccess.Item)
@@ -183,7 +182,7 @@ namespace Objectivism
                         tree.Append(item, path);
                         DA.SetDataTree(i, tree);
                     }
-                        
+
                 }
                 if (access == PropertyAccess.List)
                 {
@@ -196,7 +195,7 @@ namespace Objectivism
                     var newPath = new GH_Path(path.Indices.Concat(index).ToArray());
                     var tree = new GH_Structure<IGH_Goo>();
                     tree.AppendRange(list, newPath);
-                    DA.SetDataTree(i, tree);    
+                    DA.SetDataTree(i, tree);
                 }
                 if (access == PropertyAccess.Tree)
                 {
@@ -205,7 +204,7 @@ namespace Objectivism
                         : Util.EmptyTree;
                     var basePath = DA.ParameterTargetPath(i);
                     var outTree = new GH_Structure<IGH_Goo>();
-                    for(int j = 0; j < tree.PathCount; j++)
+                    for (int j = 0; j < tree.PathCount; j++)
                     {
                         var branch = tree.Branches[j];
                         var path = tree.Paths[j];
@@ -218,18 +217,18 @@ namespace Objectivism
                         outTree.AppendRange(branch, newPath);
                     }
                     DA.SetDataTree(i, outTree);
-                }   
+                }
             }
         }
 
-        
+
 
         protected override void AfterSolveInstance()
         {
             VariableParameterMaintenance();
-            foreach(var p in Params.Output)
+            foreach (var p in Params.Output)
             {
-                if(p is Param_ObjectivismOutput o)
+                if (p is Param_ObjectivismOutput o)
                 {
                     o.CommitNickName();
                 }
@@ -260,13 +259,13 @@ namespace Objectivism
 
         public void VariableParameterMaintenance()
         {
-            foreach(var param in Params.Output)
+            foreach (var param in Params.Output)
             {
-                if(param.NickName == string.Empty)
+                if (param.NickName == string.Empty)
                 {
                     param.NickName = NextUnusedName();
                 }
-                if(param is Param_ObjectivismOutput outputParam)
+                if (param is Param_ObjectivismOutput outputParam)
                 {
                     outputParam.AllPropertyNames = this.PropertyNames;
                 }
@@ -287,14 +286,14 @@ namespace Objectivism
             GraftItems = !GraftItems;
             this.Message = getGraftMessage();
             ExpireSolution(true);
-            
+
         }
 
         private void FullExplodeEventHandler(object sender, EventArgs e)
         {
             RecordUndoEvent("Object full explode");
             var unusedNames = GetUnusedNames();
-            foreach(var name in unusedNames)
+            foreach (var name in unusedNames)
             {
                 var param = new Param_ObjectivismOutput();
                 Params.RegisterOutputParam(param);
@@ -336,13 +335,13 @@ namespace Objectivism
                 GraftItems = reader.GetBoolean("GraftItemsToggle");
                 Message = getGraftMessage();
             }
-            catch 
+            catch
             {
                 GraftItems = true;
                 Message = getGraftMessage();
             }
             return base.Read(reader);
-            
+
         }
         public override bool Write(GH_IWriter writer)
         {

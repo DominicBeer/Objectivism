@@ -1,9 +1,6 @@
-﻿using System;
+﻿using Grasshopper.Kernel;
+using System;
 using System.Collections.Generic;
-
-using Grasshopper.Kernel;
-using Grasshopper.Kernel.Types;
-using Rhino.Geometry;
 
 namespace Objectivism.Components
 {
@@ -39,22 +36,22 @@ namespace Objectivism.Components
         {
             pManager.AddBooleanParameter("Implements", "I", "", GH_ParamAccess.item);
         }
- 
+
         protected override void SolveInstance(IGH_DataAccess DA)
         {
-            if(!DA.TryGetObjectivsmObject(0, out var template)) return;
+            if (!DA.TryGetObjectivsmObject(0, out var template)) return;
             if (!DA.TryGetObjectivsmObject(1, out var subject)) return;
 
             TypeNames.Add(template.TypeName);
             TypeNames.Add(subject.TypeName);
 
-            DA.SetData(0, subject.Implements(template));    
+            DA.SetData(0, subject.Implements(template));
         }
 
         protected override System.Drawing.Bitmap Icon => Resources.implements;
-        
+
         public override Guid ComponentGuid => new Guid("B77AF544-BB27-4BFB-8032-09993C3EEE4C");
 
-        public HashSet<string> TypeNames {get; private set;}
+        public HashSet<string> TypeNames { get; private set; }
     }
 }
