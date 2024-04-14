@@ -32,7 +32,7 @@ namespace Objectivism
 
         public override string ToString()
         {
-            return $"{Value.TypeName} object";
+            return Value.ToString();
         }
 
         public GH_ObjectivismObject(ObjectivismObject value)

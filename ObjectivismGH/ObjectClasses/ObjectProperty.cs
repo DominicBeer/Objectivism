@@ -85,6 +85,53 @@ namespace Objectivism
             Data = other.Data.MapTree(DuplicateUtil);
         }
 
+        public override string ToString()
+        {
+            if (Access == PropertyAccess.Item)
+            {
+                IGH_Goo first = Data.get_FirstItem(false);
+                if (first != null)
+                {
+                    return first.ToString();
+                }
+                else
+                {
+                    return "<null>";
+                }
+            }
+            else if (Access == PropertyAccess.List)
+            {
+                List<string> repr = new List<string>();
+                int n = Data.DataCount;
+                for (int i = 0; i < n; ++i)
+                {
+                    repr.Add(Data.get_DataItem(i).ToString());
+                }
+                return "[" + string.Join(", ", repr) + "]";
+            }
+            else
+            {
+                List<string> repr = new List<string>();
+                foreach (GH_Path path in Data.Paths)
+                {
+                    List<string> repr2 = new List<string>();
+                    foreach (IGH_Goo data in Data[path])
+                    {
+                        repr2.Add(data.ToString());
+                    }
+                    repr.Add("  " + path.ToString() + ": [" + string.Join(", ", repr2) + "]");
+                }
+                if (repr.Count > 0)
+                {
+                    return "{\n" + string.Join("\n", repr) + "\n}";
+                }
+                else
+                {
+                    return "{}";
+                }
+            }
+        }
+
         private IGH_Goo DeReferenceIfRequired(IGH_Goo goo)
         {
             if (goo is IGH_GeometricGoo geom)

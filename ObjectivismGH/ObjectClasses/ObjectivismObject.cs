@@ -5,6 +5,7 @@ using Rhino.Geometry;
 using Rhino.Render;
 using System.Collections.Generic;
 using System.Dynamic;
+using System.IO;
 using System.Linq;
 
 namespace Objectivism
@@ -102,6 +103,28 @@ namespace Objectivism
             }
         }
 
+        private string indentString(string cont)
+        {
+            StringReader sr = new StringReader(cont);
+            List<string> r = new List<string>();
+            string line;
+            while ((line = sr.ReadLine()) != null) {
+                r.Add("  " + line);
+            }
+            return string.Join("\n", r);
+        }
+
+        public override string ToString()
+        {
+            List<string> repr = new List<string>();
+            repr.Add($"{TypeName} {{");
+            foreach ((string name, ObjectProperty prop) in properties)
+            {
+                repr.Add(indentString($"{name}: {prop.ToString()}"));
+            }
+            repr.Add("}");
+            return string.Join("\n", repr);
+        }
 
         internal (ObjectivismObject obj, AccessInfo conflicts) AddOrChangeProperties(List<(string name, ObjectProperty newProperty)> changes) =>
             AddOrChangeProperties(changes, this.TypeName);
