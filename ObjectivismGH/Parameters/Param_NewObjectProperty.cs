@@ -2,11 +2,10 @@
 using Grasshopper.Kernel;
 using Grasshopper.Kernel.Parameters;
 using Objectivism.Forms;
-using Objectivism.Parameters;
 using System;
 using System.Windows.Forms;
 
-namespace Objectivism
+namespace Objectivism.Parameters
 {
     public class Param_NewObjectProperty : Param_GenericObject, IHasPreviewToggle
     {

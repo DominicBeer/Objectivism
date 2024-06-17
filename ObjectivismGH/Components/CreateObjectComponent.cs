@@ -1,13 +1,14 @@
 ﻿using Grasshopper.Kernel;
+using Objectivism.ObjectClasses;
+using Objectivism.Parameters;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
-using static Objectivism.DataUtil;
+using static Objectivism.Components.Utilities.DataUtil;
 
-
-namespace Objectivism
+namespace Objectivism.Components
 {
     internal interface IHasMultipleTypes
     {

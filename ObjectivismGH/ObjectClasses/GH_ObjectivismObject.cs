@@ -6,7 +6,7 @@ using Rhino.Geometry;
 using Rhino.Render;
 using System;
 
-namespace Objectivism
+namespace Objectivism.ObjectClasses
 {
     public class GH_ObjectivismObject : GH_GeometricGoo<ObjectivismObject>, IGH_PreviewData, IGH_RenderAwareData,
         GH_ISerializable

@@ -1,10 +1,11 @@
 ﻿using Grasshopper.Kernel;
 using Grasshopper.Kernel.Data;
 using Grasshopper.Kernel.Types;
+using Objectivism.ObjectClasses;
 using Objectivism.Parameters;
 using System.Collections.Generic;
 
-namespace Objectivism
+namespace Objectivism.Components.Utilities
 {
     internal static class DataUtil
     {

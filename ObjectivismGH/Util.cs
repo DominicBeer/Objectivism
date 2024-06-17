@@ -3,6 +3,7 @@ using Grasshopper;
 using Grasshopper.Kernel;
 using Grasshopper.Kernel.Data;
 using Grasshopper.Kernel.Types;
+using Objectivism.ObjectClasses;
 using Rhino.Geometry;
 using System;
 using System.Collections.Generic;

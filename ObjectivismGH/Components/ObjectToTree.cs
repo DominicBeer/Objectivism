@@ -1,6 +1,8 @@
 ﻿using Grasshopper.Kernel;
 using Grasshopper.Kernel.Data;
 using Grasshopper.Kernel.Types;
+using Objectivism.Components.Utilities;
+using Objectivism.ObjectClasses;
 using System;
 using System.Collections.Generic;
 using System.Drawing;

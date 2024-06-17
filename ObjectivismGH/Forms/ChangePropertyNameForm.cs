@@ -1,5 +1,7 @@
 ﻿using Grasshopper.Kernel;
 using Grasshopper.Kernel.Undo;
+using Objectivism.Components;
+using Objectivism.Parameters;
 using System;
 using System.Collections.Generic;
 using System.Linq;

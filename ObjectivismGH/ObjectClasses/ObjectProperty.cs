@@ -9,8 +9,7 @@ using System.Linq;
 using static Objectivism.DeReferenceGeometryUtil;
 using static Objectivism.Util;
 
-
-namespace Objectivism
+namespace Objectivism.ObjectClasses
 {
     internal enum PropertyAccess { Item, List, Tree }
 

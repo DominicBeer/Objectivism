@@ -1,13 +1,15 @@
 ﻿using Grasshopper.Kernel;
 using Grasshopper.Kernel.Parameters;
+using Objectivism.ObjectClasses;
+using Objectivism.Parameters;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
-using static Objectivism.DataUtil;
+using static Objectivism.Components.Utilities.DataUtil;
 
-namespace Objectivism
+namespace Objectivism.Components
 {
     public class AddOrChangePropertiesComponent : GH_Component, IGH_VariableParameterComponent, IHasMultipleTypes
     {

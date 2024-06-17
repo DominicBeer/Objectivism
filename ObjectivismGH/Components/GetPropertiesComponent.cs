@@ -3,13 +3,16 @@ using Grasshopper.Kernel;
 using Grasshopper.Kernel.Data;
 using Grasshopper.Kernel.Parameters;
 using Grasshopper.Kernel.Types;
+using Objectivism.Components.Utilities;
+using Objectivism.ObjectClasses;
+using Objectivism.Parameters;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 
-namespace Objectivism
+namespace Objectivism.Components
 {
     public class GetPropertiesComponent : GH_Component, IGH_VariableParameterComponent, IHasMultipleTypes
     {

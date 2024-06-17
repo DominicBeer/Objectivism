@@ -1,14 +1,14 @@
 ﻿using GH_IO.Serialization;
 using Grasshopper.Kernel;
 using Grasshopper.Kernel.Parameters;
+using Objectivism.Components;
 using Objectivism.Forms;
-using Objectivism.Parameters;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
 
-namespace Objectivism
+namespace Objectivism.Parameters
 {
     public class Param_ExtraObjectProperty : Param_GenericObject, IHasPreviewToggle //Item access, property retrieval
     {

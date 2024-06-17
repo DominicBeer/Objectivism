@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using System.Dynamic;
 using System.Linq;
 
-namespace Objectivism
+namespace Objectivism.ObjectClasses
 {
     public class ObjectivismObject : IGH_PreviewData, IGH_RenderAwareData
     {

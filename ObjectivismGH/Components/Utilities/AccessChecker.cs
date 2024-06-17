@@ -1,7 +1,8 @@
 ﻿using Grasshopper.Kernel;
+using Objectivism.ObjectClasses;
 using System.Collections.Generic;
 
-namespace Objectivism
+namespace Objectivism.Components.Utilities
 {
     internal class AccessChecker
     {
