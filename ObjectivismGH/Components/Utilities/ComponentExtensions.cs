@@ -7,13 +7,14 @@ using System.Collections.Generic;
 
 namespace Objectivism.Components.Utilities
 {
-    internal static class DataUtil
+    internal static class ComponentExtensions
     {
-        internal static (string Name, ObjectProperty Property) RetrieveProperties( IGH_DataAccess DA, int paramIndex,
-            IGH_Component @this )
+        public static (string Name, ObjectProperty Property) GetProperty( this IGH_Component component,
+            IGH_DataAccess daObject, int paramIndex )
         {
             var previewOn = true;
-            var param = @this.Params.Input[paramIndex];
+            var param = component.Params.Input[paramIndex];
+
             if ( param is IHasPreviewToggle hasPreviewToggle )
             {
                 previewOn = hasPreviewToggle.PreviewOn;
@@ -24,9 +25,9 @@ namespace Objectivism.Components.Utilities
             if ( param.Access == GH_ParamAccess.item )
             {
                 IGH_Goo item = null;
-                if ( !DA.GetData( paramIndex, ref item ) )
+                if ( !daObject.GetData( paramIndex, ref item ) )
                 {
-                    @this.AddRuntimeMessage( GH_RuntimeMessageLevel.Remark,
+                    component.AddRuntimeMessage( GH_RuntimeMessageLevel.Remark,
                         $"{name} has no input and has been assigned null data" );
                 }
 
@@ -35,32 +36,17 @@ namespace Objectivism.Components.Utilities
             else if ( param.Access == GH_ParamAccess.list )
             {
                 var items = new List<IGH_Goo>();
-                DA.GetDataList( paramIndex, items );
+                daObject.GetDataList( paramIndex, items );
                 prop = new ObjectProperty( items );
             }
             else //tree access
             {
-                DA.GetDataTree( paramIndex, out GH_Structure<IGH_Goo> itemTree );
+                daObject.GetDataTree( paramIndex, out GH_Structure<IGH_Goo> itemTree );
                 prop = new ObjectProperty( itemTree );
             }
 
             prop.PreviewOn = previewOn;
             return (name, prop);
-        }
-
-        internal static bool TryGetObjectivsmObject( this IGH_DataAccess DA, int paramIndex, out ObjectivismObject obj )
-        {
-            obj = null;
-            IGH_Goo goo = null;
-            if ( !DA.GetData( paramIndex, ref goo ) ) { return false; }
-
-            if ( goo is GH_ObjectivismObject ghObj )
-            {
-                obj = ghObj.Value;
-                return true;
-            }
-
-            return false;
         }
     }
 }

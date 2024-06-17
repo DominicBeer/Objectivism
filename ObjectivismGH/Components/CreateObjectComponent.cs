@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
-using static Objectivism.Components.Utilities.DataUtil;
+using static Objectivism.Components.Utilities.ComponentExtensions;
 
 namespace Objectivism.Components
 {
@@ -17,17 +17,18 @@ namespace Objectivism.Components
 
     public class CreateObjectComponent : GH_Component, IGH_VariableParameterComponent
     {
-        private readonly string _defaultNickName = "Property";
-        private readonly string _numbers = "1234567890";
+        private const string _myDefaultNickname = "Object";
+        private const string _defaultNickName = "Property";
+        private const string _numbers = "1234567890";
 
         private string _nickNameCache;
 
         public CreateObjectComponent()
-            : base( "Create Object", "Object",
+            : base( "Create Object", _myDefaultNickname,
                 "Encapsulate multiple kinds of data within a single object",
                 "Sets", "Objectivism" )
         {
-            this._nickNameCache = this.NickName;
+            this._nickNameCache = _myDefaultNickname;
             this.IconDisplayMode = GH_IconDisplayMode.name;
             this.ObjectChanged += this.NickNameChangedEventHandler;
         }
@@ -60,8 +61,10 @@ namespace Objectivism.Components
             var emptyParams = dynamicParams.Where( p => p.NickName == string.Empty );
             foreach ( var param in emptyParams )
             {
-                var paramKey = GH_ComponentParamServer.InventUniqueNickname( this._numbers, this.StrippedParamNames() );
-                param.NickName = this._defaultNickName + paramKey;
+                // TODO: TG: Review. The use of StrippedParamNames() does not make sense to me.
+
+                var paramKey = GH_ComponentParamServer.InventUniqueNickname( _numbers, this.StrippedParamNames() );
+                param.NickName = _defaultNickName + paramKey;
             }
         }
 
@@ -92,19 +95,19 @@ namespace Objectivism.Components
         }
 
 
-        protected override void SolveInstance( IGH_DataAccess DA )
+        protected override void SolveInstance( IGH_DataAccess daObject )
         {
             var typeName = this.NickName;
             this._nickNameCache = this.NickName;
             var data = new List<(string Name, ObjectProperty Property)>();
             for ( var i = 0; i < this.Params.Input.Count; i++ )
             {
-                data.Add( RetrieveProperties( DA, i, this ) );
+                data.Add( this.GetProperty( daObject, i ) );
             }
 
             var obj = new ObjectivismObject( data, typeName );
             var ghObj = new GH_ObjectivismObject( obj );
-            DA.SetData( 0, ghObj );
+            daObject.SetData( 0, ghObj );
         }
 
         private List<string> StrippedParamNames()
@@ -113,9 +116,10 @@ namespace Objectivism.Components
             return variableParams
                 .Select( p => p.NickName )
                 .Where( n =>
-                    n.StartsWith( this._defaultNickName ) &&
-                    this._numbers.Contains( n.ToCharArray()[this._defaultNickName.Length] ) )
-                .Select( n => n.Replace( this._defaultNickName, "" ) )
+                    n.Length > _defaultNickName.Length
+                    && char.IsDigit( n[_defaultNickName.Length] )
+                    && n.StartsWith( _defaultNickName, StringComparison.Ordinal ) )
+                .Select( n => n.Substring( _defaultNickName.Length ) )
                 .ToList();
         }
 

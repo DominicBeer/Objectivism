@@ -1,5 +1,6 @@
 ﻿using Grasshopper.Kernel;
 using Grasshopper.Kernel.Parameters;
+using Objectivism.Components.Utilities;
 using Objectivism.ObjectClasses;
 using Objectivism.Parameters;
 using System;
@@ -7,32 +8,31 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
-using static Objectivism.Components.Utilities.DataUtil;
 
 namespace Objectivism.Components
 {
     public class InheritComponent : GH_Component, IGH_VariableParameterComponent, IHasMultipleTypes
     {
-        private readonly string _defaultNickName = "Property";
+        private const string _myDefaultNickname = "NewTypeName";
+        private const string _defaultNickName = "Property";
 
-        private readonly string _description =
+        private const string _description =
             "Property to change in object, or add if the property does not exist. Param nickname must correspond to name of property to change/add";
 
-        private readonly string _numbers = "1234567890";
+        private const string _numbers = "1234567890";
 
         private readonly HashSet<string> _propertyNames = new HashSet<string>();
-
         private string _nickNameCache;
 
         /// <summary>
         ///     Initializes a new instance of the ChangePropertiesComponent class.
         /// </summary>
         public InheritComponent()
-            : base( "Inherit", "NewTypeName",
+            : base( "Inherit", _myDefaultNickname,
                 "Create a new object from a template. Add or change properties as required",
                 "Sets", "Objectivism" )
         {
-            this._nickNameCache = this.NickName;
+            this._nickNameCache = _myDefaultNickname;
             this.IconDisplayMode = GH_IconDisplayMode.name;
             this.ObjectChanged += this.NickNameChangedEventHandler;
             this.Message = "Inherit";
@@ -62,7 +62,7 @@ namespace Objectivism.Components
                 Name = "PropertyToChange",
                 nickNameCache = string.Empty,
                 NickName = string.Empty,
-                Description = this._description
+                Description = _description
             };
             return param;
         }
@@ -98,10 +98,12 @@ namespace Objectivism.Components
 
         internal string NextUnusedName()
         {
+            // TODO: TG: Review. The use of StrippedParamNames() does not make sense to me.
+
             var unusedNames = this.GetUnusedNames();
             return unusedNames.Count == 0
-                ? this._defaultNickName +
-                  GH_ComponentParamServer.InventUniqueNickname( this._numbers, this.StrippedParamNames() )
+                ? _defaultNickName +
+                  GH_ComponentParamServer.InventUniqueNickname( _numbers, this.StrippedParamNames() )
                 : unusedNames[0];
         }
 
@@ -147,8 +149,6 @@ namespace Objectivism.Components
             {
                 this.UpdatePropertyNames();
             }
-
-            ;
         }
 
         /// <summary>
@@ -180,8 +180,6 @@ namespace Objectivism.Components
             }
         }
 
-        private bool JustOneTypeName() => this.TypeNames.Count <= 1;
-
         private void CommitParamNames( IGH_Param param )
         {
             if ( param is Param_ExtraObjectProperty p )
@@ -205,13 +203,13 @@ namespace Objectivism.Components
         /// <summary>
         ///     This is the method that actually does the work.
         /// </summary>
-        /// <param name="DA">The DA object is used to retrieve from inputs and store in outputs.</param>
-        protected override void SolveInstance( IGH_DataAccess DA )
+        /// <param name="daObject">The DA object is used to retrieve from inputs and store in outputs.</param>
+        protected override void SolveInstance( IGH_DataAccess daObject )
         {
             var typeName = this.NickName;
             this._nickNameCache = this.NickName;
 
-            if ( !DA.TryGetObjectivsmObject( 0, out var obj ) )
+            if ( !daObject.TryGetObjectivsmObject( 0, out var obj ) )
             {
                 return;
             }
@@ -220,12 +218,12 @@ namespace Objectivism.Components
 
             for ( var i = 1; i < this.Params.Input.Count; i++ )
             {
-                updates.Add( RetrieveProperties( DA, i, this ) );
+                updates.Add( this.GetProperty( daObject, i ) );
             }
 
             var (newObj, accessConflict) = obj.AddOrChangeProperties( updates, typeName );
             accessConflict.BroadcastConflicts( this );
-            DA.SetData( 0, new GH_ObjectivismObject( newObj ) );
+            daObject.SetData( 0, new GH_ObjectivismObject( newObj ) );
         }
 
         private List<string> StrippedParamNames()
@@ -234,9 +232,10 @@ namespace Objectivism.Components
             return variableParams
                 .Select( p => p.NickName )
                 .Where( n =>
-                    n.StartsWith( this._defaultNickName ) &&
-                    this._numbers.Contains( n.ToCharArray()[this._defaultNickName.Length] ) )
-                .Select( n => n.Replace( this._defaultNickName, "" ) )
+                    n.Length > _defaultNickName.Length
+                    && char.IsDigit( n[_defaultNickName.Length] )
+                    && n.StartsWith( _defaultNickName, StringComparison.Ordinal ) )
+                .Select( n => n.Substring( _defaultNickName.Length ) )
                 .ToList();
         }
 

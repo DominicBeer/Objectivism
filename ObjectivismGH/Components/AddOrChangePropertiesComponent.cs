@@ -1,5 +1,6 @@
 ﻿using Grasshopper.Kernel;
 using Grasshopper.Kernel.Parameters;
+using Objectivism.Components.Utilities;
 using Objectivism.ObjectClasses;
 using Objectivism.Parameters;
 using System;
@@ -7,7 +8,6 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
-using static Objectivism.Components.Utilities.DataUtil;
 
 namespace Objectivism.Components
 {
@@ -93,6 +93,8 @@ namespace Objectivism.Components
 
         internal string NextUnusedName()
         {
+            // TODO: TG: Review. The use of StrippedParamNames() does not make sense to me.
+
             var unusedNames = this.GetUnusedNames();
             return unusedNames.Count == 0
                 ? this._defaultNickName +
@@ -142,8 +144,6 @@ namespace Objectivism.Components
             {
                 this.UpdatePropertyNames();
             }
-
-            ;
         }
 
         /// <summary>
@@ -192,10 +192,10 @@ namespace Objectivism.Components
         /// <summary>
         ///     This is the method that actually does the work.
         /// </summary>
-        /// <param name="DA">The DA object is used to retrieve from inputs and store in outputs.</param>
-        protected override void SolveInstance( IGH_DataAccess DA )
+        /// <param name="daObject">The DA object is used to retrieve from inputs and store in outputs.</param>
+        protected override void SolveInstance( IGH_DataAccess daObject )
         {
-            if ( !DA.TryGetObjectivsmObject( 0, out var obj ) )
+            if ( !daObject.TryGetObjectivsmObject( 0, out var obj ) )
             {
                 return;
             }
@@ -204,12 +204,12 @@ namespace Objectivism.Components
 
             for ( var i = 1; i < this.Params.Input.Count; i++ )
             {
-                updates.Add( RetrieveProperties( DA, i, this ) );
+                updates.Add( this.GetProperty( daObject, i ) );
             }
 
             var (newObj, accessConflict) = obj.AddOrChangeProperties( updates );
             accessConflict.BroadcastConflicts( this );
-            DA.SetData( 0, new GH_ObjectivismObject( newObj ) );
+            daObject.SetData( 0, new GH_ObjectivismObject( newObj ) );
         }
 
         private List<string> StrippedParamNames()

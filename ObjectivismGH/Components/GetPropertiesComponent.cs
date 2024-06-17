@@ -159,11 +159,11 @@ namespace Objectivism.Components
         /// <summary>
         ///     This is the method that actually does the work.
         /// </summary>
-        /// <param name="DA">The DA object is used to retrieve from inputs and store in outputs.</param>
-        protected override void SolveInstance( IGH_DataAccess DA )
+        /// <param name="daObject">The DA object is used to retrieve from inputs and store in outputs.</param>
+        protected override void SolveInstance( IGH_DataAccess daObject )
         {
             IGH_Goo goo = null;
-            if ( !DA.GetData( 0, ref goo ) )
+            if ( !daObject.GetData( 0, ref goo ) )
             {
                 return;
             }
@@ -204,20 +204,20 @@ namespace Objectivism.Components
                 if ( access == PropertyAccess.Item )
                 {
                     var item = prop?.Data.get_FirstItem( false );
-                    var path = DA.ParameterTargetPath( i );
+                    var path = daObject.ParameterTargetPath( i );
                     if ( this._graftItems )
                     {
-                        int[] index = { DA.ParameterTargetIndex( 0 ) };
+                        int[] index = { daObject.ParameterTargetIndex( 0 ) };
                         var newPath = new GH_Path( path.Indices.Concat( index ).ToArray() );
                         var tree = new GH_Structure<IGH_Goo>();
                         tree.Append( item, newPath );
-                        DA.SetDataTree( i, tree );
+                        daObject.SetDataTree( i, tree );
                     }
                     else
                     {
                         var tree = new GH_Structure<IGH_Goo>();
                         tree.Append( item, path );
-                        DA.SetDataTree( i, tree );
+                        daObject.SetDataTree( i, tree );
                     }
                 }
 
@@ -227,12 +227,12 @@ namespace Objectivism.Components
                         ? prop.Data.Branches[0]
                         : new List<IGH_Goo>();
 
-                    var path = DA.ParameterTargetPath( i );
-                    int[] index = { DA.ParameterTargetIndex( 0 ) };
+                    var path = daObject.ParameterTargetPath( i );
+                    int[] index = { daObject.ParameterTargetIndex( 0 ) };
                     var newPath = new GH_Path( path.Indices.Concat( index ).ToArray() );
                     var tree = new GH_Structure<IGH_Goo>();
                     tree.AppendRange( list, newPath );
-                    DA.SetDataTree( i, tree );
+                    daObject.SetDataTree( i, tree );
                 }
 
                 if ( access == PropertyAccess.Tree )
@@ -240,13 +240,13 @@ namespace Objectivism.Components
                     var tree = prop != null
                         ? prop.Data
                         : Util.EmptyTree;
-                    var basePath = DA.ParameterTargetPath( i );
+                    var basePath = daObject.ParameterTargetPath( i );
                     var outTree = new GH_Structure<IGH_Goo>();
                     for ( var j = 0; j < tree.PathCount; j++ )
                     {
                         var branch = tree.Branches[j];
                         var path = tree.Paths[j];
-                        int[] index = { DA.ParameterTargetIndex( 0 ) };
+                        int[] index = { daObject.ParameterTargetIndex( 0 ) };
                         var newPathIndices = basePath.Indices
                             .Concat( index )
                             .Concat( path.Indices )
@@ -255,7 +255,7 @@ namespace Objectivism.Components
                         outTree.AppendRange( branch, newPath );
                     }
 
-                    DA.SetDataTree( i, outTree );
+                    daObject.SetDataTree( i, outTree );
                 }
             }
         }
@@ -296,7 +296,7 @@ namespace Objectivism.Components
         {
             this.RecordUndoEvent( "Object full explode" );
             var unusedNames = this.GetUnusedNames();
-            foreach ( var name in unusedNames )
+            for ( var i = 0; i < unusedNames.Count; ++i )
             {
                 var param = new Param_ObjectivismOutput();
                 this.Params.RegisterOutputParam( param );

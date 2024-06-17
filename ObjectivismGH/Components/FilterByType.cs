@@ -1,5 +1,4 @@
 ﻿using Grasshopper.Kernel;
-using Grasshopper.Kernel.Parameters;
 using Grasshopper.Kernel.Types;
 using Objectivism.ObjectClasses;
 using Objectivism.Parameters;
@@ -11,14 +10,15 @@ using System.Windows.Forms;
 
 namespace Objectivism.Components
 {
-    public class FilterByTypeOBSOLETE : GH_Component, IGH_VariableParameterComponent
+    [Obsolete( "Obsolete", true )]
+    public class FilterByType : GH_Component, IGH_VariableParameterComponent
     {
         private readonly HashSet<string> _typeNames = new HashSet<string>();
 
         /// <summary>
         ///     Initializes a new instance of the FilterByType class.
         /// </summary>
-        public FilterByTypeOBSOLETE()
+        public FilterByType()
             : base( "Filter By Type Old", "Filter",
                 "Filter objects by their type name",
                 "Sets", "Objectivism" )
@@ -86,17 +86,6 @@ namespace Objectivism.Components
         {
         }
 
-
-        private HashSet<string> GetTypeNames()
-        {
-            var input = (Param_GenericObject) this.Params.Input[0];
-            var objs = input.PersistentDataCount != 0
-                ? input.PersistentData.WhereIsType<GH_ObjectivismObject>().ToList()
-                : input.VolatileData.AllData( false ).WhereIsType<GH_ObjectivismObject>().ToList();
-            var inputNames = new HashSet<string>( objs.Select( obj => obj.Value.TypeName ) );
-            return inputNames;
-        }
-
         protected override void BeforeSolveInstance()
         {
             this._typeNames.Clear();
@@ -106,11 +95,11 @@ namespace Objectivism.Components
         /// <summary>
         ///     This is the method that actually does the work.
         /// </summary>
-        /// <param name="DA">The DA object is used to retrieve from inputs and store in outputs.</param>
-        protected override void SolveInstance( IGH_DataAccess DA )
+        /// <param name="daObject">The DA object is used to retrieve from inputs and store in outputs.</param>
+        protected override void SolveInstance( IGH_DataAccess daObject )
         {
             IGH_Goo goo = null;
-            if ( !DA.GetData( 0, ref goo ) )
+            if ( !daObject.GetData( 0, ref goo ) )
             {
                 return;
             }
@@ -133,11 +122,11 @@ namespace Objectivism.Components
                 var name = param.NickName;
                 if ( obj.Value.TypeName == name )
                 {
-                    DA.SetData( i, obj );
+                    daObject.SetData( i, obj );
                 }
                 else
                 {
-                    DA.SetData( i, null );
+                    daObject.SetData( i, null );
                 }
             }
         }
@@ -167,7 +156,7 @@ namespace Objectivism.Components
         {
             this.RecordUndoEvent( "GetAllTypes" );
             var unusedNames = this.GetUnusedNames();
-            foreach ( var name in unusedNames )
+            for ( var i = 0; i < unusedNames.Count; ++i )
             {
                 var param = new Param_ObjectivismObjectTypeOutput();
                 this.Params.RegisterOutputParam( param );
@@ -178,7 +167,5 @@ namespace Objectivism.Components
             this.Params.OnParametersChanged();
             this.ExpireSolution( true );
         }
-
-        private void UpdateObjectEventHandler( object sender, EventArgs e ) => this.ExpireSolution( true );
     }
 }

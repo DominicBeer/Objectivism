@@ -39,14 +39,14 @@ namespace Objectivism.Components
         protected override void RegisterOutputParams( GH_OutputParamManager pManager ) =>
             pManager.AddBooleanParameter( "Implements", "I", "", GH_ParamAccess.item );
 
-        protected override void SolveInstance( IGH_DataAccess DA )
+        protected override void SolveInstance( IGH_DataAccess daObject )
         {
-            if ( !DA.TryGetObjectivsmObject( 0, out var template ) )
+            if ( !daObject.TryGetObjectivsmObject( 0, out var template ) )
             {
                 return;
             }
 
-            if ( !DA.TryGetObjectivsmObject( 1, out var subject ) )
+            if ( !daObject.TryGetObjectivsmObject( 1, out var subject ) )
             {
                 return;
             }
@@ -54,7 +54,7 @@ namespace Objectivism.Components
             this.TypeNames.Add( template.TypeName );
             this.TypeNames.Add( subject.TypeName );
 
-            DA.SetData( 0, subject.Implements( template ) );
+            daObject.SetData( 0, subject.Implements( template ) );
         }
     }
 }

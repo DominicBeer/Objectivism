@@ -75,11 +75,11 @@ namespace Objectivism.Components
         /// <summary>
         ///     This is the method that actually does the work.
         /// </summary>
-        /// <param name="DA">The DA object is used to retrieve from inputs and store in outputs.</param>
-        protected override void SolveInstance( IGH_DataAccess DA )
+        /// <param name="daObject">The DA object is used to retrieve from inputs and store in outputs.</param>
+        protected override void SolveInstance( IGH_DataAccess daObject )
         {
             IGH_Goo goo = null;
-            if ( !DA.GetData( 0, ref goo ) )
+            if ( !daObject.GetData( 0, ref goo ) )
             {
                 return;
             }
@@ -120,8 +120,8 @@ namespace Objectivism.Components
                 {
                     var item = prop?.Data.get_FirstItem( false );
                     var path = new List<int> { i };
-                    path.AddRange( DA.ParameterTargetPath( 0 ).Indices );
-                    path.Add( DA.ParameterTargetIndex( 0 ) );
+                    path.AddRange( daObject.ParameterTargetPath( 0 ).Indices );
+                    path.Add( daObject.ParameterTargetIndex( 0 ) );
                     var newPath = new GH_Path( path.ToArray() );
                     outTree.Append( item, newPath );
                     nameTree.Append( nameGoo, newPath );
@@ -133,8 +133,8 @@ namespace Objectivism.Components
                         ? prop.Data.Branches[0]
                         : new List<IGH_Goo>();
                     var path = new List<int> { i };
-                    path.AddRange( DA.ParameterTargetPath( 0 ).Indices );
-                    path.Add( DA.ParameterTargetIndex( 0 ) );
+                    path.AddRange( daObject.ParameterTargetPath( 0 ).Indices );
+                    path.Add( daObject.ParameterTargetIndex( 0 ) );
                     var newPath = new GH_Path( path.ToArray() );
                     outTree.AppendRange( list, newPath );
                     nameTree.Append( nameGoo, newPath );
@@ -146,8 +146,8 @@ namespace Objectivism.Components
                         ? prop.Data
                         : Util.EmptyTree;
                     var path = new List<int> { i };
-                    path.AddRange( DA.ParameterTargetPath( 0 ).Indices );
-                    path.Add( DA.ParameterTargetIndex( 0 ) );
+                    path.AddRange( daObject.ParameterTargetPath( 0 ).Indices );
+                    path.Add( daObject.ParameterTargetIndex( 0 ) );
                     for ( var j = 0; j < tree.PathCount; j++ )
                     {
                         var branch = tree.Branches[j];
@@ -162,8 +162,8 @@ namespace Objectivism.Components
                 }
             }
 
-            DA.SetDataTree( 0, outTree );
-            DA.SetDataTree( 1, nameTree );
+            daObject.SetDataTree( 0, outTree );
+            daObject.SetDataTree( 1, nameTree );
         }
 
         protected override void AfterSolveInstance()
