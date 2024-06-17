@@ -1,72 +1,72 @@
 ﻿using Grasshopper.Kernel;
 using System.Collections.Generic;
+
 namespace Objectivism
 {
-    class AccessChecker
+    internal class AccessChecker
     {
-        private Dictionary<string, PropertyAccess> accessRecorder;
-        private HashSet<string> warningsToThrow;
+        private readonly Dictionary<string, PropertyAccess> _accessRecorder;
 
-        private IGH_Component hostRef;
+        private readonly IGH_Component _hostRef;
+        private readonly HashSet<string> _warningsToThrow;
 
-        public AccessChecker(IGH_Component @this)
+        public AccessChecker( IGH_Component @this )
         {
-            this.accessRecorder = new Dictionary<string, PropertyAccess>();
-            this.warningsToThrow = new HashSet<string>();
-            this.hostRef = @this;
+            this._accessRecorder = new Dictionary<string, PropertyAccess>();
+            this._warningsToThrow = new HashSet<string>();
+            this._hostRef = @this;
         }
 
-        public void AccessCheck(ObjectProperty prop, string name)
+        public void AccessCheck( ObjectProperty prop, string name )
         {
-            if (accessRecorder.ContainsKey(name))
+            if ( this._accessRecorder.ContainsKey( name ) )
             {
-                if (accessRecorder[name] != prop.Access)
+                if ( this._accessRecorder[name] != prop.Access )
                 {
-                    warningsToThrow.Add(name);
+                    this._warningsToThrow.Add( name );
                 }
             }
             else
             {
-                accessRecorder.Add(name, prop.Access);
+                this._accessRecorder.Add( name, prop.Access );
             }
         }
 
         public void ThrowWarnings()
         {
-            foreach (var name in warningsToThrow)
+            foreach ( var name in this._warningsToThrow )
             {
-                hostRef.AddRuntimeMessage(GH_RuntimeMessageLevel.Warning, $"Access not consistent for {name} property. Output data tree may be messy and not consistent");
+                this._hostRef.AddRuntimeMessage( GH_RuntimeMessageLevel.Warning,
+                    $"Access not consistent for {name} property. Output data tree may be messy and not consistent" );
             }
         }
 
-        public PropertyAccess BestGuessAccess(string name)
+        public PropertyAccess BestGuessAccess( string name )
         {
-            if (accessRecorder.ContainsKey(name))
+            if ( this._accessRecorder.ContainsKey( name ) )
             {
-                return accessRecorder[name];
+                return this._accessRecorder[name];
             }
-            else
-            {
 
-                try
+            try
+            {
+                var data = this._hostRef.Params.Input[0].VolatileData.AllData( true );
+                foreach ( var goo in data )
                 {
-                    var data = hostRef.Params.Input[0].VolatileData.AllData(true);
-                    foreach (var goo in data)
+                    if ( goo is GH_ObjectivismObject ghObj )
                     {
-                        if (goo is GH_ObjectivismObject ghObj)
+                        if ( ghObj.Value.HasProperty( name ) )
                         {
-                            if (ghObj.Value.HasProperty(name))
-                            {
-                                return ghObj.Value.GetProperty(name).Access;
-                            }
+                            return ghObj.Value.GetProperty( name ).Access;
                         }
                     }
-                    return PropertyAccess.Item;
                 }
-                catch
-                {
-                    return PropertyAccess.Item;
-                }
+
+                return PropertyAccess.Item;
+            }
+            catch
+            {
+                return PropertyAccess.Item;
             }
         }
     }
