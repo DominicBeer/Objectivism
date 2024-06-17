@@ -57,7 +57,7 @@ namespace Objectivism.Components
 
                 if ( param is Param_ObjectivismObjectTypeOutput outputParam )
                 {
-                    outputParam.AllPropertyNames = this._typeNames;
+                    outputParam.ReplaceAllPropertyNames( this._typeNames );
                 }
             }
         }

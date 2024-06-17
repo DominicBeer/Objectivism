@@ -1,5 +1,4 @@
-﻿using GH_IO;
-using GH_IO.Serialization;
+﻿using GH_IO.Serialization;
 using Grasshopper.Kernel;
 using Grasshopper.Kernel.Types;
 using Rhino.Geometry;
@@ -8,23 +7,13 @@ using System;
 
 namespace Objectivism.ObjectClasses
 {
-    public class GH_ObjectivismObject : GH_GeometricGoo<ObjectivismObject>, IGH_PreviewData, IGH_RenderAwareData,
-        GH_ISerializable
+    public class GH_ObjectivismObject : GH_GeometricGoo<ObjectivismObject>, IGH_PreviewData, IGH_RenderAwareData
     {
-        public GH_ObjectivismObject( ObjectivismObject value )
-        {
-            this.Value = value;
-        }
+        public GH_ObjectivismObject( ObjectivismObject value ) : base( value ) { }
 
-        public GH_ObjectivismObject()
-        {
-            this.Value = null;
-        }
+        public GH_ObjectivismObject() { }
 
-        public GH_ObjectivismObject( GH_ObjectivismObject other )
-        {
-            this.Value = other.Value;
-        }
+        public GH_ObjectivismObject( GH_ObjectivismObject other ) : base( other.Value ) { }
 
         public override bool IsValid => true;
 
@@ -34,6 +23,16 @@ namespace Objectivism.ObjectClasses
         public override string TypeDescription => $"Objectivism object of type: {this.Value.TypeName}";
 
         public override BoundingBox Boundingbox => this.Value.BoundingBox;
+
+
+        public BoundingBox ClippingBox => this.Value.ClippingBox;
+
+        public void DrawViewportWires( GH_PreviewWireArgs args ) => this.Value.DrawViewportWires( args );
+
+        public void DrawViewportMeshes( GH_PreviewMeshArgs args ) => this.Value.DrawViewportMeshes( args );
+
+        public void AppendRenderGeometry( GH_RenderArgs args, RenderMaterial material ) =>
+            this.Value.AppendRenderGeometry( args, material );
 
         public override bool Read( GH_IReader reader )
         {
@@ -61,16 +60,6 @@ namespace Objectivism.ObjectClasses
             }
         }
 
-
-        public BoundingBox ClippingBox => this.Value.ClippingBox;
-
-        public void DrawViewportWires( GH_PreviewWireArgs args ) => this.Value.DrawViewportWires( args );
-
-        public void DrawViewportMeshes( GH_PreviewMeshArgs args ) => this.Value.DrawViewportMeshes( args );
-
-        public void AppendRenderGeometry( GH_RenderArgs args, RenderMaterial material ) =>
-            this.Value.AppendRenderGeometry( args, material );
-
         public override IGH_Goo Duplicate() => new GH_ObjectivismObject( this.Value );
 
         public override IGH_GeometricGoo DuplicateGeometry() => new GH_ObjectivismObject( this.Value );
@@ -81,9 +70,9 @@ namespace Objectivism.ObjectClasses
         {
             if ( source == null ) { return false; }
 
-            if ( source is GH_ObjectivismObject gh_obj )
+            if ( source is GH_ObjectivismObject ghObject )
             {
-                this.Value = gh_obj.Value;
+                this.Value = ghObject.Value;
                 return true;
             }
 

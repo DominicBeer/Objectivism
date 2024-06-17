@@ -7,14 +7,19 @@ using System.Windows.Forms;
 
 namespace Objectivism.Parameters
 {
-    public class Param_NewObjectProperty : Param_GenericObject, IHasPreviewToggle
+    public sealed class Param_NewObjectProperty : Param_GenericObject, IHasPreviewToggle
     {
-        internal string nickNameCache = "";
+        private const string _myDefaultNickName = "Prop";
+        private string _nickNameCache;
 
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="Param_NewObjectProperty" /> class with default values.
+        ///     Nick name and nick name cache are both set to "Prop".
+        /// </summary>
         public Param_NewObjectProperty()
         {
             this.Name = "Property";
-            this.nickNameCache = "Prop";
+            this._nickNameCache = "Prop";
             this.NickName = "Prop";
             this.Description = "Property for an Objectivsm Object ";
             this.ObjectChanged += this.NickNameChangedEventHandler;
@@ -27,13 +32,13 @@ namespace Objectivism.Parameters
         public bool PreviewOn { get; private set; } = true;
 
 
-        internal void CommitNickName() => this.nickNameCache = this.NickName;
+        internal void CommitNickName() => this._nickNameCache = this.NickName;
 
         public void NickNameChangedEventHandler( object sender, GH_ObjectChangedEventArgs args )
         {
             if ( args.Type == GH_ObjectEventType.NickName )
             {
-                if ( this.NickName != this.nickNameCache )
+                if ( this.NickName != this._nickNameCache )
                 {
                     this.AddRuntimeMessage( GH_RuntimeMessageLevel.Warning,
                         "Property input name changed but object not updated, right click on component and press \"Recompute\"" );
@@ -51,12 +56,11 @@ namespace Objectivism.Parameters
 
             Menu_AppendSeparator( menu );
 
-            var recomputeButton = Menu_AppendItem( menu, "Recompute", this.RecomputeHandler );
+            Menu_AppendItem( menu, "Recompute", this.RecomputeHandler );
 
             Menu_AppendSeparator( menu );
 
-            var toggleButton =
-                Menu_AppendItem( menu, "Preview Geometry", this.PreviewToggleHandler, true, this.PreviewOn );
+            Menu_AppendItem( menu, "Preview Geometry", this.PreviewToggleHandler, true, this.PreviewOn );
 
             Menu_AppendSeparator( menu );
 
@@ -64,13 +68,13 @@ namespace Objectivism.Parameters
             var isList = this.Access == GH_ParamAccess.list;
             var isTree = this.Access == GH_ParamAccess.tree;
 
-            var itemButton = Menu_AppendItem( menu, "Item Access", this.ItemAccessEventHandler, true, isItem );
-            var listButton = Menu_AppendItem( menu, "List Access", this.ListAccessEventHandler, true, isList );
-            var treeButton = Menu_AppendItem( menu, "Tree Access", this.TreeAccessEventHandler, true, isTree );
+            Menu_AppendItem( menu, "Item Access", this.ItemAccessEventHandler, true, isItem );
+            Menu_AppendItem( menu, "List Access", this.ListAccessEventHandler, true, isList );
+            Menu_AppendItem( menu, "Tree Access", this.TreeAccessEventHandler, true, isTree );
 
             Menu_AppendSeparator( menu );
 
-            var changeButton = Menu_AppendItem( menu, "Change Property Name", this.LaunchChangeDialog, true );
+            Menu_AppendItem( menu, "Change Property Name", this.LaunchChangeDialog, true );
         }
 
         private void PreviewToggleHandler( object sender, EventArgs e )

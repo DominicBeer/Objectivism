@@ -56,16 +56,7 @@ namespace Objectivism.Components
             side == GH_ParameterSide.Input && index != 0;
 
         public IGH_Param CreateParameter( GH_ParameterSide side, int index )
-        {
-            var param = new Param_ExtraObjectProperty
-            {
-                Name = "PropertyToChange",
-                nickNameCache = string.Empty,
-                NickName = string.Empty,
-                Description = _description
-            };
-            return param;
-        }
+            => new Param_ExtraObjectProperty { Name = "PropertyToChange", Description = _description };
 
         public bool DestroyParameter( GH_ParameterSide side, int index ) => true;
 
@@ -81,7 +72,7 @@ namespace Objectivism.Components
             {
                 if ( param is Param_ExtraObjectProperty extraParam )
                 {
-                    extraParam.AllPropertyNames = this._propertyNames;
+                    extraParam.ReplaceAllPropertyNames( this._propertyNames );
                 }
 
                 if ( param.NickName == string.Empty )

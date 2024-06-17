@@ -232,28 +232,41 @@ namespace Objectivism.ObjectClasses
             {
                 var name = pair.Name.SpacesToUnderscores();
                 var prop = pair.Property;
-                if ( prop.Access == PropertyAccess.Item )
-                {
-                    var item = prop != null
-                        ? ProcessGoo( prop.Data.get_FirstItem( false ) )
-                        : null;
-                    eoColl.Add( new KeyValuePair<string, object>( name, item ) );
-                }
 
-                if ( prop.Access == PropertyAccess.List )
-                {
-                    var list = prop != null
-                        ? prop.Data.Branches[0].Select( ProcessGoo ).ToList()
-                        : new List<object>();
-                    eoColl.Add( new KeyValuePair<string, object>( name, list ) );
-                }
+                // TODO: Review null handling.
+                // I've added the following null test. The original code is in the `else` branch. The original code
+                // checks prop.Access, then tests prop for null. If prop is null, prop.Access will throw. If
+                // empty List or DataTree are required, PropertyAccess must be stored separately.
 
-                if ( prop.Access == PropertyAccess.Tree )
+                if ( prop == null )
                 {
-                    var tree = prop != null
-                        ? prop.Data.ToDataTree( ProcessGoo )
-                        : new DataTree<object>();
-                    eoColl.Add( new KeyValuePair<string, object>( name, tree ) );
+                    eoColl.Add( new KeyValuePair<string, object>( name, null ) );
+                }
+                else
+                {
+                    if ( prop.Access == PropertyAccess.Item )
+                    {
+                        var item = prop != null
+                            ? ProcessGoo( prop.Data.get_FirstItem( false ) )
+                            : null;
+                        eoColl.Add( new KeyValuePair<string, object>( name, item ) );
+                    }
+
+                    if ( prop.Access == PropertyAccess.List )
+                    {
+                        var list = prop != null
+                            ? prop.Data.Branches[0].Select( ProcessGoo ).ToList()
+                            : new List<object>();
+                        eoColl.Add( new KeyValuePair<string, object>( name, list ) );
+                    }
+
+                    if ( prop.Access == PropertyAccess.Tree )
+                    {
+                        var tree = prop != null
+                            ? prop.Data.ToDataTree( ProcessGoo )
+                            : new DataTree<object>();
+                        eoColl.Add( new KeyValuePair<string, object>( name, tree ) );
+                    }
                 }
             }
 

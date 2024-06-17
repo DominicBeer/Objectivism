@@ -10,15 +10,20 @@ using System.Windows.Forms;
 
 namespace Objectivism.Parameters
 {
-    public class Param_ExtraObjectProperty : Param_GenericObject, IHasPreviewToggle //Item access, property retrieval
+    public sealed class
+        Param_ExtraObjectProperty : Param_GenericObject, IHasPreviewToggle //Item access, property retrieval
     {
-        internal HashSet<string> AllPropertyNames = new HashSet<string>();
-        internal string nickNameCache = "";
+        private readonly HashSet<string> _allPropertyNames = new HashSet<string>();
+        private string _nickNameCache;
 
+        /// <summary>
+        ///     Initializes a new instance of the <see cref="Param_ExtraObjectProperty" />  class with default values.
+        ///     The initial nick name and nick name cache are <see cref="string.Empty" />.
+        /// </summary>
         public Param_ExtraObjectProperty()
         {
             this.Name = "Extra Property";
-            this.nickNameCache = string.Empty;
+            this._nickNameCache = string.Empty;
             this.NickName = string.Empty;
             this.Description = "Property to change/add to object";
             this.Access = GH_ParamAccess.item;
@@ -26,17 +31,26 @@ namespace Objectivism.Parameters
         }
 
         public override Guid ComponentGuid => new Guid( "41412f8c-c2d9-45c7-83d0-bd04a10e14fa" );
+
         public override GH_Exposure Exposure => GH_Exposure.hidden;
+
         public override string TypeName => "Object Property Data";
 
         public bool PreviewOn { get; private set; } = true;
-        internal void CommitNickName() => this.nickNameCache = this.NickName;
+
+        internal void ReplaceAllPropertyNames( IEnumerable<string> names )
+        {
+            this._allPropertyNames.Clear();
+            this._allPropertyNames.UnionWith( names );
+        }
+
+        internal void CommitNickName() => this._nickNameCache = this.NickName;
 
         public void NickNameChangedEventHandler( object sender, GH_ObjectChangedEventArgs args )
         {
             if ( args.Type == GH_ObjectEventType.NickName )
             {
-                if ( this.NickName != this.nickNameCache )
+                if ( this.NickName != this._nickNameCache )
                 {
                     this.AddRuntimeMessage( GH_RuntimeMessageLevel.Warning,
                         "Property input name changed but object not updated, right click on component and press \"Recompute\"" );
@@ -50,12 +64,11 @@ namespace Objectivism.Parameters
 
             Menu_AppendSeparator( menu );
 
-            var recomputeButton = Menu_AppendItem( menu, "Recompute", this.RecomputeHandler );
+            Menu_AppendItem( menu, "Recompute", this.RecomputeHandler );
 
             Menu_AppendSeparator( menu );
 
-            var toggleButton =
-                Menu_AppendItem( menu, "Preview Geometry", this.PreviewToggleHandler, true, this.PreviewOn );
+            Menu_AppendItem( menu, "Preview Geometry", this.PreviewToggleHandler, true, this.PreviewOn );
 
             Menu_AppendSeparator( menu );
 
@@ -63,19 +76,20 @@ namespace Objectivism.Parameters
             var isList = this.Access == GH_ParamAccess.list;
             var isTree = this.Access == GH_ParamAccess.tree;
 
-            var itemButton = Menu_AppendItem( menu, "Item Access", this.ItemAccessEventHandler, true, isItem );
-            var listButton = Menu_AppendItem( menu, "List Access", this.ListAccessEventHandler, true, isList );
-            var treeButton = Menu_AppendItem( menu, "Tree Access", this.TreeAccessEventHandler, true, isTree );
+            Menu_AppendItem( menu, "Item Access", this.ItemAccessEventHandler, true, isItem );
+            Menu_AppendItem( menu, "List Access", this.ListAccessEventHandler, true, isList );
+            Menu_AppendItem( menu, "Tree Access", this.TreeAccessEventHandler, true, isTree );
 
             Menu_AppendSeparator( menu );
 
             var button = Menu_AppendItem( menu, "Properties" );
-            var dropDownButtons = this.AllPropertyNames
-                .Select( n => new ToolStripMenuItem( n, null, this.PropertyClickEventHandler ) ).ToArray();
+            var dropDownButtons = this._allPropertyNames
+                .Select( n => (ToolStripItem) new ToolStripMenuItem( n, null, this.PropertyClickEventHandler ) )
+                .ToArray();
             button.DropDownItems.AddRange( dropDownButtons );
 
             Menu_AppendSeparator( menu );
-            var changeButton = Menu_AppendItem( menu, "Change Property Name", this.LaunchChangeDialog, true );
+            Menu_AppendItem( menu, "Change Property Name", this.LaunchChangeDialog, true );
         }
 
         private void PreviewToggleHandler( object sender, EventArgs e )

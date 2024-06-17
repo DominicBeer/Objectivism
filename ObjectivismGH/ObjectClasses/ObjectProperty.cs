@@ -152,12 +152,7 @@ namespace Objectivism.ObjectClasses
                 return geom.DuplicateGeometry();
             }
 
-            if ( goo != null )
-            {
-                return goo.Duplicate();
-            }
-
-            return goo;
+            return goo?.Duplicate();
         }
 
         public bool WriteProp( GH_IWriter writer )

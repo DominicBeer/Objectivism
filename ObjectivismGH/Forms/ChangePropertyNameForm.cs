@@ -74,7 +74,7 @@ namespace Objectivism.Forms
         private void GetParamsOfAllTypes()
         {
             var createParams = this._doc.Objects
-                .Where( obj => obj is CreateObjectComponent c )
+                .Where( obj => obj is CreateObjectComponent )
                 .Select( obj => (IGH_Component) obj )
                 .Select( c => c.Params.Input
                     .Where( p => p is Param_NewObjectProperty && p.NickName == this._propName ) )
@@ -86,14 +86,14 @@ namespace Objectivism.Forms
                     .Where( p => p is Param_ExtraObjectProperty && p.NickName == this._propName ) )
                 .SelectMany( x => x );
             var propParams = this._doc.Objects
-                .Where( obj => obj is GetPropertiesComponent c )
+                .Where( obj => obj is GetPropertiesComponent )
                 .Select( obj => (IGH_Component) obj )
                 .Select( c => c.Params.Output
                     .Where( p => p is Param_ObjectivismOutput && p.NickName == this._propName ) )
                 .SelectMany( x => x );
-            var allParams = createParams.Concat( changeParams ).Concat( propParams );
-            var count = allParams.Count();
-            this._paramsToChange = allParams.ToList();
+            var allParams = createParams.Concat( changeParams ).Concat( propParams ).ToList();
+            var count = allParams.Count;
+            this._paramsToChange = allParams;
             this.InstancesLabel.Text = $"{count} instances found";
             this.Update();
         }
@@ -135,9 +135,9 @@ namespace Objectivism.Forms
                 .Select( c => c.Params.Output
                     .Where( p => p is Param_ObjectivismOutput && p.NickName == this._propName ) )
                 .SelectMany( x => x );
-            var allParams = createParams.Concat( changeParams ).Concat( propParams );
-            var count = allParams.Count();
-            this._paramsToChange = allParams.ToList();
+            var allParams = createParams.Concat( changeParams ).Concat( propParams ).ToList();
+            var count = allParams.Count;
+            this._paramsToChange = allParams;
             this.InstancesLabel.Text = $"{count} instances found";
             this.Update();
         }
@@ -196,9 +196,9 @@ namespace Objectivism.Forms
                 .Select( c => c.Params.Output
                     .Where( p => p is Param_ObjectivismOutput && p.NickName == this._propName ) )
                 .SelectMany( x => x );
-            var allParams = createParams.Concat( changeParams ).Concat( propParams );
-            var count = allParams.Count();
-            this._paramsToChange = allParams.ToList();
+            var allParams = createParams.Concat( changeParams ).Concat( propParams ).ToList();
+            var count = allParams.Count;
+            this._paramsToChange = allParams;
             this.InstancesLabel.Text = $"{count} instances found";
             this.Update();
         }
