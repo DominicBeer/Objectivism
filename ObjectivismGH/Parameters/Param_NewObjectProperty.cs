@@ -9,7 +9,6 @@ namespace Objectivism.Parameters
 {
     public sealed class Param_NewObjectProperty : Param_GenericObject, IHasPreviewToggle
     {
-        private const string _myDefaultNickName = "Prop";
         private string _nickNameCache;
 
         /// <summary>

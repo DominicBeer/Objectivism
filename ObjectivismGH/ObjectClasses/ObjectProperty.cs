@@ -11,8 +11,6 @@ using static Objectivism.Util;
 
 namespace Objectivism.ObjectClasses
 {
-    internal enum PropertyAccess { Item, List, Tree }
-
     public class ObjectProperty : IGH_RenderAwareData, IGH_PreviewData
     {
         public ObjectProperty()
