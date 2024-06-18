@@ -120,14 +120,7 @@ namespace Objectivism.Components
             foreach ( var (i, param) in this.Params.Output.Enumerate() )
             {
                 var name = param.NickName;
-                if ( obj.Value.TypeName == name )
-                {
-                    daObject.SetData( i, obj );
-                }
-                else
-                {
-                    daObject.SetData( i, null );
-                }
+                daObject.SetData( i, obj.Value.TypeName == name ? obj : null );
             }
         }
 

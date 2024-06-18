@@ -92,9 +92,10 @@ namespace Objectivism.ObjectClasses
         public bool TryGetProperty( string name, out ObjectProperty property )
         {
             property = null;
-            if ( this._propertyGetter.ContainsKey( name ) )
+
+            if ( this._propertyGetter.TryGetValue( name, out var propertyIndex ) )
             {
-                property = this._properties[this._propertyGetter[name]].Property;
+                property = this._properties[propertyIndex].Property;
                 return true;
             }
 
@@ -103,9 +104,9 @@ namespace Objectivism.ObjectClasses
 
         public ObjectProperty GetProperty( string name )
         {
-            if ( this._propertyGetter.ContainsKey( name ) )
+            if ( this._propertyGetter.TryGetValue( name, out var propertyIndex ) )
             {
-                return this._properties[this._propertyGetter[name]].Property;
+                return this._properties[propertyIndex].Property;
             }
 
             return null;
@@ -279,12 +280,7 @@ namespace Objectivism.ObjectClasses
 
         internal class AccessInfo
         {
-            private readonly List<string> _conflicts;
-
-            public AccessInfo()
-            {
-                this._conflicts = new List<string>();
-            }
+            private readonly List<string> _conflicts = new List<string>();
 
             public void AddConflict( string propertyName ) => this._conflicts.Add( propertyName );
 

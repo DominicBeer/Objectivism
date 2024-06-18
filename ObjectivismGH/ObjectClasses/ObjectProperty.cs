@@ -32,7 +32,7 @@ namespace Objectivism.ObjectClasses
         public ObjectProperty( List<IGH_Goo> list )
         {
             this.Data = new GH_Structure<IGH_Goo>();
-            var list2 = list.Select( goo => this.DeReferenceIfRequired( goo ) ).ToList();
+            var list2 = list.Select( this.DeReferenceIfRequired ).ToList();
             this.Data.AppendRange( list2 );
             this.Access = PropertyAccess.List;
         }

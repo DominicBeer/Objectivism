@@ -18,6 +18,7 @@ namespace Objectivism.Parameters
         /// </summary>
         public Param_ObjectivismOutput()
         {
+            // TODO: Review, remove virtual member calls. https://discourse.mcneel.com/t/api-param-genericobject-does-not-provide-suitable-constructors/184753
             base.Name = this.OutputType;
             this._nickNameCache = string.Empty;
             this.NickName = string.Empty;

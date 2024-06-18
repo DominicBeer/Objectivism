@@ -96,7 +96,7 @@ namespace Objectivism.Components
                 return;
             }
 
-            obj.AllProperties.ForEach( n => this.AddToStoreIfRequired( n ) );
+            obj.AllProperties.ForEach( this.AddToStoreIfRequired );
 
             var outTree = new GH_Structure<IGH_Goo>();
             var nameTree = new GH_Structure<GH_String>();

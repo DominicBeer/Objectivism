@@ -20,9 +20,9 @@ namespace Objectivism.Components.Utilities
 
         public void AccessCheck( ObjectProperty prop, string name )
         {
-            if ( this._accessRecorder.ContainsKey( name ) )
+            if ( this._accessRecorder.TryGetValue( name, out var access ) )
             {
-                if ( this._accessRecorder[name] != prop.Access )
+                if ( access != prop.Access )
                 {
                     this._warningsToThrow.Add( name );
                 }
@@ -44,9 +44,9 @@ namespace Objectivism.Components.Utilities
 
         public PropertyAccess BestGuessAccess( string name )
         {
-            if ( this._accessRecorder.ContainsKey( name ) )
+            if ( this._accessRecorder.TryGetValue( name, out var access ) )
             {
-                return this._accessRecorder[name];
+                return access;
             }
 
             try

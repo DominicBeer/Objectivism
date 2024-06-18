@@ -103,9 +103,7 @@ namespace Objectivism.Forms
             var connectedTypes = new HashSet<string> { this._typeName };
 
             var typeComps =
-                new Stack<IHasMultipleTypes>( this._doc.Objects
-                    .Where( obj => obj is IHasMultipleTypes )
-                    .Select( obj => (IHasMultipleTypes) obj ) );
+                new Stack<IHasMultipleTypes>( this._doc.Objects.OfType<IHasMultipleTypes>() );
 
             connectedTypes = this.FindAllConnectedTypes( connectedTypes, typeComps );
 
@@ -144,7 +142,7 @@ namespace Objectivism.Forms
 
         private HashSet<string> FindAllConnectedTypes( HashSet<string> connectedTypes, Stack<IHasMultipleTypes> stack )
         {
-            if ( stack.Count() == 0 )
+            if ( stack.Count == 0 )
             {
                 return connectedTypes;
             }
