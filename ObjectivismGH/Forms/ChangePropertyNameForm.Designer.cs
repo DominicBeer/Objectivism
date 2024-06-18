@@ -37,7 +37,7 @@
             this.ThisTypeButton = new System.Windows.Forms.RadioButton();
             this.ConnectedTypesButton = new System.Windows.Forms.RadioButton();
             this.AllTypesButton = new System.Windows.Forms.RadioButton();
-            this.label1 = new System.Windows.Forms.Label();
+            this.Label1 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // OkButton
@@ -141,15 +141,15 @@
             // 
             // label1
             // 
-            this.label1.AutoSize = true;
-            this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.Location = new System.Drawing.Point(21, 66);
-            this.label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(510, 25);
-            this.label1.TabIndex = 3;
-            this.label1.Text = "Change this property name for components operating on: ";
-            this.label1.Click += new System.EventHandler(this.label1_Click);
+            this.Label1.AutoSize = true;
+            this.Label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.Label1.Location = new System.Drawing.Point(21, 66);
+            this.Label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.Label1.Name = "label1";
+            this.Label1.Size = new System.Drawing.Size(510, 25);
+            this.Label1.TabIndex = 3;
+            this.Label1.Text = "Change this property name for components operating on: ";
+            this.Label1.Click += new System.EventHandler(this.Label1_Click);
             // 
             // ChangePropertyNameForm
             // 
@@ -161,7 +161,7 @@
             this.Controls.Add(this.ConnectedTypesButton);
             this.Controls.Add(this.ThisTypeButton);
             this.Controls.Add(this.NewNameBox);
-            this.Controls.Add(this.label1);
+            this.Controls.Add(this.Label1);
             this.Controls.Add(this.NewNameLabel);
             this.Controls.Add(this.InstancesLabel);
             this.Controls.Add(this.WelcomeTextLabel);
@@ -190,6 +190,6 @@
         private System.Windows.Forms.RadioButton ThisTypeButton;
         private System.Windows.Forms.RadioButton ConnectedTypesButton;
         private System.Windows.Forms.RadioButton AllTypesButton;
-        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label Label1;
     }
 }

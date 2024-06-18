@@ -1,236 +1,227 @@
 ﻿using Grasshopper.Kernel;
 using Grasshopper.Kernel.Parameters;
+using Objectivism.Components.Utilities;
+using Objectivism.ObjectClasses;
+using Objectivism.Parameters;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
-using static Objectivism.DataUtil;
-namespace Objectivism
+
+namespace Objectivism.Components
 {
     public class AddOrChangePropertiesComponent : GH_Component, IGH_VariableParameterComponent, IHasMultipleTypes
     {
+        private readonly string _defaultNickName = "Property";
+
+        private readonly string _description =
+            "Property to change in object, or add if the property does not exist. Param nickname must correspond to name of property to change/add";
+
+        private readonly string _numbers = "1234567890";
+
+
+        private readonly HashSet<string> _propertyNames = new HashSet<string>();
+
         /// <summary>
-        /// Initializes a new instance of the ChangePropertiesComponent class.
+        ///     Initializes a new instance of the ChangePropertiesComponent class.
         /// </summary>
         public AddOrChangePropertiesComponent()
-          : base("Add Or Change Properties", "Add/Change",
-              "Change the value of a particular property, or add a new property",
-              "Sets", "Objectivism")
+            : base( "Add Or Change Properties", "Add/Change",
+                "Change the value of a particular property, or add a new property",
+                "Sets", "Objectivism" )
         {
         }
 
+        /// <summary>
+        ///     Provides an Icon for the component.
+        /// </summary>
+        protected override Bitmap Icon => Resources.objchange;
 
-        private HashSet<string> PropertyNames = new HashSet<string>();
-        internal List<string> GetUnusedNames() => PropertyNames.Except(Params.Input.Select(p => p.NickName).Skip(1)).ToList();
+        /// <summary>
+        ///     Gets the unique ID for this component. Do not change this ID after release.
+        /// </summary>
+        public override Guid ComponentGuid => new Guid( "e9a4a775-aaa2-489f-9d8e-6f8f7c1bc36b" );
+
+
+        public bool CanInsertParameter( GH_ParameterSide side, int index ) =>
+            side == GH_ParameterSide.Input && index != 0;
+
+        public bool CanRemoveParameter( GH_ParameterSide side, int index ) =>
+            side == GH_ParameterSide.Input && index != 0;
+
+        public IGH_Param CreateParameter( GH_ParameterSide side, int index )
+            => new Param_ExtraObjectProperty { Name = "PropertyToChange", Description = this._description };
+
+        public bool DestroyParameter( GH_ParameterSide side, int index ) => true;
+
+        public void VariableParameterMaintenance()
+        {
+            this.UpdatePropertyNames();
+            for ( var i = 1; i < this.Params.Input.Count; i++ )
+            {
+                this.Params.Input[i].Optional = true;
+            }
+
+            foreach ( var param in this.Params.Input )
+            {
+                if ( param is Param_ExtraObjectProperty extraParam )
+                {
+                    extraParam.ReplaceAllPropertyNames( this._propertyNames );
+                }
+
+                if ( param.NickName == string.Empty )
+                {
+                    param.NickName = this.NextUnusedName();
+                }
+            }
+        }
+
+        public HashSet<string> TypeNames { get; } = new HashSet<string>();
+
+        internal List<string> GetUnusedNames() =>
+            this._propertyNames.Except( this.Params.Input.Select( p => p.NickName ).Skip( 1 ) ).ToList();
+
         internal string NextUnusedName()
         {
-            var unusedNames = GetUnusedNames();
+            // TODO: TG: Review. The use of StrippedParamNames() does not make sense to me.
+
+            var unusedNames = this.GetUnusedNames();
             return unusedNames.Count == 0
-                ? defaultNickName + GH_ComponentParamServer.InventUniqueNickname(numbers, StrippedParamNames())
+                ? this._defaultNickName +
+                  GH_ComponentParamServer.InventUniqueNickname( this._numbers, this.StrippedParamNames() )
                 : unusedNames[0];
         }
 
         private void UpdatePropertyNames()
         {
-            PropertyNames.Clear();
-            var data = this.Params.Input[0].VolatileData.AllData(true).ToList();
-            foreach (var goo in data)
+            this._propertyNames.Clear();
+            var data = this.Params.Input[0].VolatileData.AllData( true ).ToList();
+            foreach ( var goo in data )
             {
-                if (goo is GH_ObjectivismObject ghObj)
+                if ( goo is GH_ObjectivismObject ghObj )
                 {
                     var propNames = ghObj.Value.AllProperties;
-                    PropertyNames.UnionWith(propNames);
+                    this._propertyNames.UnionWith( propNames );
                 }
             }
         }
 
         /// <summary>
-        /// Registers all the input parameters for this component.
+        ///     Registers all the input parameters for this component.
         /// </summary>
-        protected override void RegisterInputParams(GH_Component.GH_InputParamManager pManager)
+        protected override void RegisterInputParams( GH_InputParamManager pManager )
         {
-            pManager.AddGenericParameter("Object", "O", "Object to make changes to", GH_ParamAccess.item);
+            pManager.AddGenericParameter( "Object", "O", "Object to make changes to", GH_ParamAccess.item );
 
-            var objParam = new Param_GenericObject();
-            objParam.NickName = "O";
-            objParam.Name = "Object";
-            objParam.Description = "Object to modify";
-            objParam.Access = GH_ParamAccess.item;
-            objParam.ObjectChanged += ObjectWireChangedHandler;
+            var objParam = new Param_GenericObject
+            {
+                NickName = "O", Name = "Object", Description = "Object to modify", Access = GH_ParamAccess.item
+            };
+            objParam.ObjectChanged += this.ObjectWireChangedHandler;
             /*
             var param = new Param_ExtraObjectProperty();
             param.Name = "PropertyName";
             param.nickNameCache = defaultNickName + "1";
             param.NickName = param.nickNameCache;
             param.Description = description;
-            pManager.AddParameter(param); 
+            pManager.AddParameter(param);
             */
         }
 
-        private void ObjectWireChangedHandler(IGH_DocumentObject sender, GH_ObjectChangedEventArgs e)
+        private void ObjectWireChangedHandler( IGH_DocumentObject sender, GH_ObjectChangedEventArgs e )
         {
-            if (e.Type == GH_ObjectEventType.Sources)
+            if ( e.Type == GH_ObjectEventType.Sources )
             {
                 this.UpdatePropertyNames();
-            };
+            }
         }
 
-        private readonly string description = "Property to change in object, or add if the property does not exist. Param nickname must correspond to name of property to change/add";
         /// <summary>
-        /// Registers all the output parameters for this component.
+        ///     Registers all the output parameters for this component.
         /// </summary>
-        protected override void RegisterOutputParams(GH_Component.GH_OutputParamManager pManager)
-        {
-            pManager.AddGenericParameter("Object", "O", "Modified object", GH_ParamAccess.item);
-        }
+        protected override void RegisterOutputParams( GH_OutputParamManager pManager ) =>
+            pManager.AddGenericParameter( "Object", "O", "Modified object", GH_ParamAccess.item );
 
         protected override void BeforeSolveInstance()
         {
-            UpdateTypeNames();
-            if (!JustOneTypeName())
+            this.UpdateTypeNames();
+            if ( !this.JustOneTypeName() )
             {
-                this.AddRuntimeMessage(GH_RuntimeMessageLevel.Remark, "Mutliple types detected");
+                this.AddRuntimeMessage( GH_RuntimeMessageLevel.Remark, "Mutliple types detected" );
             }
+
             this.UpdatePropertyNames();
-            Params.Input.ForEach(CommitParamNames);
+            this.Params.Input.ForEach( this.CommitParamNames );
             base.BeforeSolveInstance();
         }
 
-        private HashSet<string> typeNames = new HashSet<string>();
-        public HashSet<string> TypeNames => typeNames;
-
         private void UpdateTypeNames()
         {
-            typeNames.Clear();
-            var data = this.Params.Input[0].VolatileData.AllData(true);
-            foreach (var goo in data)
+            this.TypeNames.Clear();
+            var data = this.Params.Input[0].VolatileData.AllData( true );
+            foreach ( var goo in data )
             {
-                if (goo is GH_ObjectivismObject ghObj)
+                if ( goo is GH_ObjectivismObject ghObj )
                 {
                     var tn = ghObj.Value.TypeName;
-                    typeNames.Add(tn);
+                    this.TypeNames.Add( tn );
                 }
             }
         }
 
-        private bool JustOneTypeName() => typeNames.Count <= 1;
+        private bool JustOneTypeName() => this.TypeNames.Count <= 1;
 
-        private void CommitParamNames(IGH_Param param)
+        private void CommitParamNames( IGH_Param param )
         {
-            if (param is Param_ExtraObjectProperty p)
+            if ( param is Param_ExtraObjectProperty p )
             {
                 p.CommitNickName();
             }
         }
 
         /// <summary>
-        /// This is the method that actually does the work.
+        ///     This is the method that actually does the work.
         /// </summary>
-        /// <param name="DA">The DA object is used to retrieve from inputs and store in outputs.</param>
-        protected override void SolveInstance(IGH_DataAccess DA)
+        /// <param name="daObject">The DA object is used to retrieve from inputs and store in outputs.</param>
+        protected override void SolveInstance( IGH_DataAccess daObject )
         {
-            if (!DA.TryGetObjectivsmObject(0, out var obj)) return;
+            if ( !daObject.TryGetObjectivsmObject( 0, out var obj ) )
+            {
+                return;
+            }
 
             var updates = new List<(string Name, ObjectProperty Property)>();
 
-            for (int i = 1; i < Params.Input.Count; i++)
+            for ( var i = 1; i < this.Params.Input.Count; i++ )
             {
-                updates.Add(RetrieveProperties(DA, i, this));
+                updates.Add( this.GetProperty( daObject, i ) );
             }
-            (var newObj, var accessConflict) = obj.AddOrChangeProperties(updates);
-            accessConflict.BroadcastConflicts(this);
-            DA.SetData(0, new GH_ObjectivismObject(newObj));
 
-        }
-
-
-        public bool CanInsertParameter(GH_ParameterSide side, int index)
-        {
-            return side == GH_ParameterSide.Input && index != 0;
-        }
-
-        public bool CanRemoveParameter(GH_ParameterSide side, int index)
-        {
-            return side == GH_ParameterSide.Input && index != 0;
-        }
-
-        public IGH_Param CreateParameter(GH_ParameterSide side, int index)
-        {
-            var param = new Param_ExtraObjectProperty();
-            param.Name = "PropertyToChange";
-            param.nickNameCache = string.Empty;
-            param.NickName = string.Empty;
-            param.Description = description;
-            return param;
-        }
-
-        public bool DestroyParameter(GH_ParameterSide side, int index)
-        {
-            return true;
-        }
-
-        public void VariableParameterMaintenance()
-        {
-            this.UpdatePropertyNames();
-            for (int i = 1; i < Params.Input.Count; i++)
-            {
-                Params.Input[i].Optional = true;
-            }
-            foreach (var param in Params.Input)
-            {
-                if (param is Param_ExtraObjectProperty extraParam)
-                {
-                    extraParam.AllPropertyNames = this.PropertyNames;
-                }
-                if (param.NickName == string.Empty)
-                {
-                    param.NickName = NextUnusedName();
-                }
-
-            }
+            var (newObj, accessConflict) = obj.AddOrChangeProperties( updates );
+            accessConflict.BroadcastConflicts( this );
+            daObject.SetData( 0, new GH_ObjectivismObject( newObj ) );
         }
 
         private List<string> StrippedParamNames()
         {
             var variableParams = this.Params.Input.ToList();
             return variableParams
-                .Select(p => p.NickName)
-                .Where(n => n.StartsWith(defaultNickName) && numbers.Contains(n.ToCharArray()[defaultNickName.Length]))
-                .Select(n => n.Replace(defaultNickName, ""))
+                .Select( p => p.NickName )
+                .Where( n =>
+                    n.StartsWith( this._defaultNickName ) &&
+                    this._numbers.Contains( n.ToCharArray()[this._defaultNickName.Length] ) )
+                .Select( n => n.Replace( this._defaultNickName, "" ) )
                 .ToList();
         }
 
-        private readonly string defaultNickName = "Property";
-        private readonly string numbers = "1234567890";
+        public override void AppendAdditionalMenuItems( ToolStripDropDown menu ) =>
+            Menu_AppendItem( menu, "Recompute", this.UpdateObjectEventHandler );
 
-        public override void AppendAdditionalMenuItems(ToolStripDropDown menu)
+        private void UpdateObjectEventHandler( object sender, EventArgs e )
         {
-            Menu_AppendItem(menu, "Recompute", UpdateObjectEventHandler);
-        }
-
-        private void UpdateObjectEventHandler(object sender, EventArgs e)
-        {
-            this.Params.Input.ForEach(p => p.ExpireSolution(false));
-            ExpireSolution(true);
-        }
-
-        /// <summary>
-        /// Provides an Icon for the component.
-        /// </summary>
-        protected override System.Drawing.Bitmap Icon
-        {
-            get
-            {
-                return Resources.objchange;
-            }
-        }
-
-        /// <summary>
-        /// Gets the unique ID for this component. Do not change this ID after release.
-        /// </summary>
-        public override Guid ComponentGuid
-        {
-            get { return new Guid("e9a4a775-aaa2-489f-9d8e-6f8f7c1bc36b"); }
+            this.Params.Input.ForEach( p => p.ExpireSolution( false ) );
+            this.ExpireSolution( true );
         }
     }
 }
