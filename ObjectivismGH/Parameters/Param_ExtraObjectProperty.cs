@@ -21,9 +21,15 @@ namespace Objectivism
 
         internal HashSet<string> AllPropertyNames = new HashSet<string>();
         internal void CommitNickName() { this.nickNameCache = NickName; }
+
+        public override string Name
+        {
+            get => NickName;
+            set => NickName = value;
+        }
+
         public Param_ExtraObjectProperty() : base()
         {
-            Name = "Extra Property";
             nickNameCache = String.Empty;
             NickName = String.Empty;
             Description = "Property to change/add to object";

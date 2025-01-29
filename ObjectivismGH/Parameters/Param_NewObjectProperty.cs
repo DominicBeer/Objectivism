@@ -16,11 +16,14 @@ namespace Objectivism
         public override GH_Exposure Exposure => GH_Exposure.hidden;
 
         public bool PreviewOn { get; private set; } = true;
+        public override string Name
+        {
+            get => NickName;
+            set => NickName = value;
+        }
 
         public Param_NewObjectProperty() : base()
         {
-
-            Name = "Property";
             nickNameCache = "Prop";
             NickName = "Prop";
             Description = "Property for an Objectivsm Object ";

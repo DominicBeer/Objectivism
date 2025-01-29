@@ -53,7 +53,6 @@ namespace Objectivism
 
             var objParam = new Param_GenericObject();
             objParam.NickName = "O";
-            objParam.Name = "Object";
             objParam.Description = "Object to modify";
             objParam.Access = GH_ParamAccess.item;
             objParam.ObjectChanged += ObjectWireChangedHandler;
@@ -157,7 +156,6 @@ namespace Objectivism
         public IGH_Param CreateParameter(GH_ParameterSide side, int index)
         {
             var param = new Param_ExtraObjectProperty();
-            param.Name = "PropertyToChange";
             param.nickNameCache = string.Empty;
             param.NickName = string.Empty;
             param.Description = description;
