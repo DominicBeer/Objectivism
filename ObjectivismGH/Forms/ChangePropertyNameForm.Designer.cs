@@ -69,7 +69,7 @@
             this.WelcomeTextLabel.Location = new System.Drawing.Point(21, 23);
             this.WelcomeTextLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.WelcomeTextLabel.Name = "WelcomeTextLabel";
-            this.WelcomeTextLabel.Size = new System.Drawing.Size(175, 25);
+            this.WelcomeTextLabel.Size = new System.Drawing.Size(143, 20);
             this.WelcomeTextLabel.TabIndex = 2;
             this.WelcomeTextLabel.Text = "WELCOME TEXT";
             // 
@@ -80,7 +80,7 @@
             this.InstancesLabel.Location = new System.Drawing.Point(21, 220);
             this.InstancesLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.InstancesLabel.Name = "InstancesLabel";
-            this.InstancesLabel.Size = new System.Drawing.Size(164, 25);
+            this.InstancesLabel.Size = new System.Drawing.Size(140, 20);
             this.InstancesLabel.TabIndex = 2;
             this.InstancesLabel.Text = "x instances found";
             // 
@@ -91,7 +91,7 @@
             this.NewNameLabel.Location = new System.Drawing.Point(22, 263);
             this.NewNameLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.NewNameLabel.Name = "NewNameLabel";
-            this.NewNameLabel.Size = new System.Drawing.Size(121, 25);
+            this.NewNameLabel.Size = new System.Drawing.Size(103, 20);
             this.NewNameLabel.TabIndex = 3;
             this.NewNameLabel.Text = "New name : ";
             // 
@@ -99,7 +99,7 @@
             // 
             this.NewNameBox.Location = new System.Drawing.Point(157, 260);
             this.NewNameBox.Name = "NewNameBox";
-            this.NewNameBox.Size = new System.Drawing.Size(646, 30);
+            this.NewNameBox.Size = new System.Drawing.Size(646, 26);
             this.NewNameBox.TabIndex = 4;
             // 
             // ThisTypeButton
@@ -108,7 +108,7 @@
             this.ThisTypeButton.Checked = true;
             this.ThisTypeButton.Location = new System.Drawing.Point(26, 108);
             this.ThisTypeButton.Name = "ThisTypeButton";
-            this.ThisTypeButton.Size = new System.Drawing.Size(151, 29);
+            this.ThisTypeButton.Size = new System.Drawing.Size(130, 24);
             this.ThisTypeButton.TabIndex = 5;
             this.ThisTypeButton.TabStop = true;
             this.ThisTypeButton.Text = "Just this type";
@@ -120,7 +120,7 @@
             this.ConnectedTypesButton.AutoSize = true;
             this.ConnectedTypesButton.Location = new System.Drawing.Point(26, 143);
             this.ConnectedTypesButton.Name = "ConnectedTypesButton";
-            this.ConnectedTypesButton.Size = new System.Drawing.Size(303, 29);
+            this.ConnectedTypesButton.Size = new System.Drawing.Size(257, 24);
             this.ConnectedTypesButton.TabIndex = 6;
             this.ConnectedTypesButton.TabStop = true;
             this.ConnectedTypesButton.Text = "This type and connected types";
@@ -132,7 +132,7 @@
             this.AllTypesButton.AutoSize = true;
             this.AllTypesButton.Location = new System.Drawing.Point(26, 178);
             this.AllTypesButton.Name = "AllTypesButton";
-            this.AllTypesButton.Size = new System.Drawing.Size(111, 29);
+            this.AllTypesButton.Size = new System.Drawing.Size(94, 24);
             this.AllTypesButton.TabIndex = 7;
             this.AllTypesButton.TabStop = true;
             this.AllTypesButton.Text = "All types";
@@ -146,16 +146,18 @@
             this.label1.Location = new System.Drawing.Point(21, 66);
             this.label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(510, 25);
+            this.label1.Size = new System.Drawing.Size(438, 20);
             this.label1.TabIndex = 3;
             this.label1.Text = "Change this property name for components operating on: ";
             this.label1.Click += new System.EventHandler(this.label1_Click);
             // 
             // ChangePropertyNameForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 25F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(820, 381);
+            this.AutoSize = true;
+            this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.ClientSize = new System.Drawing.Size(843, 398);
             this.ControlBox = false;
             this.Controls.Add(this.AllTypesButton);
             this.Controls.Add(this.ConnectedTypesButton);
