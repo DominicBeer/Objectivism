@@ -175,7 +175,6 @@ namespace Objectivism
         public IGH_Param CreateParameter(GH_ParameterSide side, int index)
         {
             var param = new Param_ExtraObjectProperty();
-            param.Name = "PropertyToChange";
             param.nickNameCache = string.Empty;
             param.NickName = string.Empty;
             param.Description = description;

@@ -1,16 +1,31 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
   <PropertyGroup>
-    <TargetFrameworks>net48</TargetFrameworks>
-    <Version>1.1.0.2</Version>
+    <TargetFrameworks>net48;net7.0-windows</TargetFrameworks>
     <Title>Objectivism</Title>
+    <Version>1.1.0.3</Version>
     <TargetExt>.gha</TargetExt>
+    <UseWPF>true</UseWPF>
+    <UseWindowsForms>true</UseWindowsForms>
   </PropertyGroup>
-  <ItemGroup>
+
+  <PropertyGroup Condition="('$(TargetFramework)'=='net48')">
+    <OutDir>../bin/Rhino7</OutDir>
+    <GenerateResourceUsePreserializedResources>true</GenerateResourceUsePreserializedResources>
+  </PropertyGroup>
+  
+  <PropertyGroup Condition="('$(TargetFramework)'=='net7.0-windows')">
+    <OutDir>../bin/Rhino8</OutDir>
+  </PropertyGroup>
+
+  <ItemGroup Condition="('$(TargetFramework)'=='net48')">
     <PackageReference Include="Grasshopper" Version="7.11.21285.13001" />
+    <PackageReference Include="System.Resources.Extensions" Version="9.0.1" />
   </ItemGroup>
-  <ItemGroup>
-    <Reference Include="System.Windows.Forms" />
+  
+  <ItemGroup Condition="('$(TargetFramework)'=='net7.0-windows')">
+    <PackageReference Include="Grasshopper" Version="8.9.24194.18121" />
   </ItemGroup>
+
   <ItemGroup>
     <Compile Update="Resources.Designer.cs">
       <DesignTime>True</DesignTime>
@@ -18,18 +33,21 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
   </ItemGroup>
+
   <ItemGroup>
     <EmbeddedResource Update="Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
+
   <ItemGroup>
     <None Update="LICENSE">
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>
     </None>
   </ItemGroup>
+
   <PropertyGroup>
     <PackageLicenseFile>$(SolutionDir)/LICENSE</PackageLicenseFile>
   </PropertyGroup>

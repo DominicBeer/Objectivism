@@ -18,9 +18,14 @@ namespace Objectivism
         internal void CommitNickName() { this.nickNameCache = NickName; }
         public override string TypeName => $"Object {outputType} Data";
         internal HashSet<string> AllPropertyNames = new HashSet<string>();
+        public override string Name
+        {
+            get => NickName;
+            set => NickName = value;
+        }
+
         public Param_ObjectivismOutput() : base()
         {
-            Name = outputType;
             nickNameCache = String.Empty;
             NickName = String.Empty;
             Description = $"Retrieved {outputType} ";
